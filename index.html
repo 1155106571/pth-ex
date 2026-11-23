@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>普通話詞語通 · Putonghua Phrase Master</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@500;700&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-paper: #F7F5F0;
+      --card-bg: #FFFFFF;
+      --ink: #1E293B;
+      --accent: #E05A47;
+      --accent-dark: #C84735;
+      --jade: #2A8C82;
+    }
+
+    body {
+      font-family: 'Inter', 'Noto Sans TC', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-paper);
+      color: var(--ink);
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+    }
+
+    .zh-font {
+      font-family: 'Noto Sans TC', 'Noto Sans SC', 'PingFang TC', 'PingFang SC', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #EB6A57 0%, #D94E3B 100%);
+      box-shadow: 0 3px 0 #B33B2A, 0 6px 14px rgba(217, 78, 59, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
+    }
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #B33B2A, 0 2px 6px rgba(217, 78, 59, 0.2);
+    }
+
+    .btn-jade {
+      background: linear-gradient(180deg, #32A196 0%, #247E75 100%);
+      box-shadow: 0 3px 0 #1B6059, 0 6px 14px rgba(42, 140, 130, 0.22);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .btn-jade:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #1B6059, 0 2px 6px rgba(42, 140, 130, 0.18);
+    }
+
+    .btn-soft {
+      background: #FFFFFF;
+      border: 1.5px solid #E5E2DC;
+      box-shadow: 0 2px 0 #E5E2DC;
+      transition: transform 0.1s ease, background-color 0.15s ease;
+    }
+    .btn-soft:active:not(:disabled) {
+      transform: translateY(1px);
+      background-color: #F3F1EC;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.96) translateY(6px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-pop {
+      animation: popIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    .animate-shake {
+      animation: shake 0.32s ease-in-out;
+    }
+
+    .flash-blur {
+      filter: blur(11px);
+      user-select: none;
+      opacity: 0.35;
+      transition: filter 0.35s ease, opacity 0.35s ease;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Prevent iOS Safari auto-zoom on inputs */
+    input[type="text"] {
+      font-size: 16px !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ==================== TOP APP BAR ==================== -->
+  <header class="sticky top-0 z-30 bg-[#F7F5F0]/95 backdrop-blur-md border-b border-[#E7E5E0]">
+    <div class="max-w-xl mx-auto px-3.5 py-2.5 flex items-center justify-between gap-2">
+      <button type="button" onclick="goHome()" class="flex items-center gap-2 text-left active:opacity-75 transition">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E05A47] to-[#C84735] text-white flex items-center justify-center font-bold text-lg shadow-sm zh-font">
+          普
+        </div>
+        <div class="leading-tight">
+          <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-slate-800 zh-font" data-trad="普通話詞語通" data-simp="普通话词语通">普通話詞語通</h1>
+          <p class="text-[11px] text-slate-500 font-medium">Putonghua Phrase Master</p>
+        </div>
+      </button>
+
+      <div class="flex items-center gap-1.5">
+        <!-- Script Switcher: Traditional / Simplified -->
+        <button id="scriptToggleBtn" type="button" onclick="toggleScript()"
+          class="px-2.5 py-1.5 rounded-xl bg-white border border-[#E5E2DC] text-xs font-bold text-slate-700 active:scale-95 transition zh-font shadow-sm">
+          繁 / <span class="text-slate-400 font-normal">简</span>
+        </button>
+
+        <!-- Sound FX Mute Toggle -->
+        <button id="sfxToggleBtn" type="button" onclick="toggleSfx()"
+          class="w-8 h-8 rounded-xl bg-white border border-[#E5E2DC] flex items-center justify-center text-slate-600 active:scale-95 transition shadow-sm"
+          aria-label="Toggle Sound Effects">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTAINER ==================== -->
+  <main class="flex-1 w-full max-w-xl mx-auto px-3.5 py-3.5 pb-10">
+
+    <!-- ==================== VIEW 1: HOME (MIXED TOPICS) ==================== -->
+    <section id="homeView" class="space-y-3.5 animate-pop">
+
+      <!-- Practice Mode Card -->
+      <div class="bg-white rounded-2xl p-3.5 border border-[#E7E5E0] shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400" data-trad="練習模式" data-simp="练习模式">練習模式</span>
+          <span id="modeHintText" class="text-[11px] font-medium text-[#2A8C82]"></span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <button id="modeBtn-pinyin" type="button" onclick="setMode('pinyin')"
+            class="mode-btn flex flex-col items-center justify-center py-2.5 px-1.5 rounded-xl border-2 transition text-center">
+            <span class="text-lg mb-0.5">⌨️</span>
+            <span class="text-xs font-bold zh-font" data-trad="拼音輸入" data-simp="拼音输入">拼音輸入</span>
+            <span class="text-[10px] opacity-75">ni3 hao3</span>
+          </button>
+
+          <button id="modeBtn-typing" type="button" onclick="setMode('typing')"
+            class="mode-btn flex flex-col items-center justify-center py-2.5 px-1.5 rounded-xl border-2 transition text-center">
+            <span class="text-lg mb-0.5">✍️</span>
+            <span class="text-xs font-bold zh-font" data-trad="中文打字" data-simp="中文打字">中文打字</span>
+            <span class="text-[10px] opacity-75" data-trad="輸入法練習" data-simp="输入法练习">輸入法練習</span>
+          </button>
+
+          <button id="modeBtn-listening" type="button" onclick="setMode('listening')"
+            class="mode-btn flex flex-col items-center justify-center py-2.5 px-1.5 rounded-xl border-2 transition text-center">
+            <span class="text-lg mb-0.5">🎧</span>
+            <span class="text-xs font-bold zh-font" data-trad="聽寫挑戰" data-simp="听写挑战">聽寫挑戰</span>
+            <span class="text-[10px] opacity-75" data-trad="拼音或漢字" data-simp="拼音或汉字">拼音或漢字</span>
+          </button>
+        </div>
+
+        <!-- Tone Requirement Toggle (Pinyin / Listening) -->
+        <div id="toneOptionRow" class="flex items-center justify-between pt-2.5 border-t border-slate-100">
+          <div class="text-xs">
+            <span class="font-bold text-slate-700 zh-font" data-trad="要求聲調數字" data-simp="要求声调数字">要求聲調數字</span>
+            <span class="text-slate-400 ml-1" data-trad="(如 wo3)" data-simp="(如 wo3)">(如 wo3)</span>
+          </div>
+          <button id="homeToneToggle" type="button" onclick="toggleRequireTones()"
+            class="px-3 py-1 rounded-full text-xs font-bold transition"></button>
+        </div>
+
+        <!-- Flash Memory Toggle (Chinese Typing) -->
+        <div id="flashOptionRow" class="hidden flex items-center justify-between pt-2.5 border-t border-slate-100">
+          <div class="text-xs">
+            <span class="font-bold text-slate-700 zh-font" data-trad="記憶閃現模式" data-simp="记忆闪现模式">記憶閃現模式</span>
+            <span class="text-slate-400 ml-1" data-trad="(2秒後模糊)" data-simp="(2秒后模糊)">(2秒後模糊)</span>
+          </div>
+          <button id="homeFlashToggle" type="button" onclick="toggleFlashMode()"
+            class="px-3 py-1 rounded-full text-xs font-bold transition"></button>
+        </div>
+      </div>
+
+      <!-- Mixed Topics Builder Card (Primary Interface) -->
+      <div class="bg-white rounded-2xl p-4 border border-[#E7E5E0] shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h2 class="text-sm sm:text-base font-extrabold text-slate-800 zh-font" data-trad="🔀 綜合混練 · 選擇主題" data-simp="🔀 综合混练 · 选择主题">🔀 綜合混練 · 選擇主題</h2>
+            <p class="text-xs text-slate-500 mt-0.5" data-trad="點選 1 個主題專項練習，或勾選多個主題隨機混練" data-simp="点选 1 个主题专项练习，或勾选多个主题随机混练">點選 1 個主題專項練習，或勾選多個主題隨機混練</p>
+          </div>
+          <span id="mixPoolBadge" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#2A8C82]/10 text-[#2A8C82] shrink-0 tabular-nums">
+            0 詞
+          </span>
+        </div>
+
+        <!-- Search + Quick Presets -->
+        <div class="space-y-2">
+          <input
+            id="topicSearchInput"
+            type="text"
+            oninput="setTopicSearch(this.value)"
+            placeholder="搜尋主題，如 數字、食物、香港地鐵、成語..."
+            class="w-full bg-[#F8F7F4] border border-[#E7E5E0] focus:bg-white focus:border-[#2A8C82] focus:outline-none rounded-xl px-3.5 py-2 text-sm text-slate-700 placeholder:text-slate-400 transition"
+          />
+
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" onclick="selectMixPreset('all')"
+              class="px-2.5 py-1.5 rounded-lg bg-[#F3F1EC] hover:bg-[#EAE7E0] text-slate-700 text-xs font-semibold active:scale-95 transition zh-font"
+              data-trad="全選 (25)" data-simp="全选 (25)">全選 (25)</button>
+            <button type="button" onclick="selectMixPreset('daily')"
+              class="px-2.5 py-1.5 rounded-lg bg-[#F3F1EC] hover:bg-[#EAE7E0] text-slate-700 text-xs font-semibold active:scale-95 transition zh-font"
+              data-trad="☀️ 日常精選" data-simp="☀️ 日常精选">☀️ 日常精選</button>
+            <button type="button" onclick="selectMixPreset('random5')"
+              class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-semibold active:scale-95 transition zh-font"
+              data-trad="🎲 隨機 5 主題" data-simp="🎲 随机 5 主题">🎲 隨機 5 主題</button>
+            <button type="button" onclick="selectMixPreset('clear')"
+              class="px-2.5 py-1.5 rounded-lg bg-white border border-[#E7E5E0] text-slate-500 text-xs font-semibold active:scale-95 transition zh-font"
+              data-trad="清除" data-simp="清除">清除</button>
+          </div>
+        </div>
+
+        <!-- Toggleable Topic Chips -->
+        <div id="mixChipsContainer" class="flex flex-wrap gap-1.5 max-h-64 overflow-y-auto py-1">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Round Length Selector -->
+        <div class="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-100">
+          <span class="text-xs font-bold text-slate-600 zh-font" data-trad="每輪題數" data-simp="每轮题数">每輪題數</span>
+          <div class="inline-flex bg-[#F3F1EC] p-0.5 rounded-xl gap-0.5">
+            <button type="button" onclick="setMixCount(10)" data-count="10" class="mix-cnt-btn px-3 py-1 rounded-lg text-xs font-bold transition">10</button>
+            <button type="button" onclick="setMixCount(15)" data-count="15" class="mix-cnt-btn px-3 py-1 rounded-lg text-xs font-bold transition">15</button>
+            <button type="button" onclick="setMixCount(20)" data-count="20" class="mix-cnt-btn px-3 py-1 rounded-lg text-xs font-bold transition">20</button>
+            <button type="button" onclick="setMixCount(30)" data-count="30" class="mix-cnt-btn px-3 py-1 rounded-lg text-xs font-bold transition">30</button>
+          </div>
+        </div>
+
+        <!-- Primary Start CTA -->
+        <button id="startMixBtn" type="button" onclick="startMixRound()"
+          class="w-full btn-primary text-white font-bold py-3.5 px-4 rounded-2xl text-sm sm:text-base zh-font flex items-center justify-center gap-2">
+          <span>🚀</span>
+          <span id="startMixBtnLabel">開始練習</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: GAMEPLAY ==================== -->
+    <section id="gameView" class="hidden space-y-3 animate-pop">
+
+      <!-- Top Progress & Stats Bar -->
+      <div class="bg-white rounded-2xl px-3.5 py-2.5 border border-[#E7E5E0] shadow-sm space-y-2">
+        <div class="flex items-center justify-between gap-2 text-xs">
+          <button type="button" onclick="goHome()"
+            class="flex items-center gap-1 font-bold text-slate-500 hover:text-slate-800 active:scale-95 transition">
+            <span>←</span>
+            <span data-trad="主題" data-simp="主题">主題</span>
+          </button>
+
+          <span id="gameHeaderTitle" class="font-bold text-slate-700 truncate zh-font">綜合混練</span>
+
+          <div class="flex items-center gap-2 shrink-0 font-bold tabular-nums">
+            <span id="gameStreakBadge" class="text-amber-600">🔥 0</span>
+            <span id="gameProgressText" class="text-slate-500">1 / 10</span>
+          </div>
+        </div>
+        <div class="w-full h-1.5 bg-[#EAE7E0] rounded-full overflow-hidden">
+          <div id="gameProgressBar" class="h-full bg-gradient-to-r from-[#E05A47] to-[#2A8C82] rounded-full transition-all duration-300" style="width: 10%;"></div>
+        </div>
+      </div>
+
+      <!-- Main Phrase Card -->
+      <div id="phraseCard" class="bg-white rounded-2xl p-4 sm:p-5 border-2 border-[#E7E5E0] shadow-sm transition-all space-y-3.5">
+
+        <!-- Badges Row -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span id="cardModeTag" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#E05A47]/10 text-[#E05A47] zh-font">
+              拼音輸入
+            </span>
+            <span id="cardTopicTag" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 zh-font">
+              🔢 數字
+            </span>
+          </div>
+
+          <button id="inGameToneToggle" type="button" onclick="toggleRequireTones()"
+            class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition shrink-0">
+            需聲調 (wo3)
+          </button>
+        </div>
+
+        <!-- Prompt Area -->
+        <div class="text-center py-2 space-y-1.5">
+          <!-- Phrase Display -->
+          <div id="phraseDisplayWrap" class="min-h-[3.5rem] flex items-center justify-center">
+            <div id="phraseChars" class="text-4xl sm:text-5xl font-bold tracking-wider text-slate-800 zh-font leading-snug break-words">
+              你好
+            </div>
+          </div>
+
+          <!-- Listening Mode Placeholder -->
+          <div id="listeningPrompt" class="hidden py-1">
+            <button type="button" onclick="speakCurrent(1.0)"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#2A8C82]/10 text-[#2A8C82] font-bold text-base active:scale-95 transition">
+              <span class="text-2xl">🔊</span>
+              <span class="zh-font" data-trad="點擊收聽普通話讀音" data-simp="点击收听普通话读音">點擊收聽普通話讀音</span>
+            </button>
+          </div>
+
+          <!-- English Meaning -->
+          <p id="phraseMeaning" class="text-sm text-slate-500 font-medium"></p>
+
+          <!-- Audio Controls Row -->
+          <div class="flex items-center justify-center gap-2 pt-1.5">
+            <button type="button" onclick="speakCurrent(1.0)"
+              class="btn-soft px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <span>🔊</span>
+              <span class="zh-font" data-trad="正常 1.0x" data-simp="正常 1.0x">正常 1.0x</span>
+            </button>
+            <button type="button" onclick="speakCurrent(0.65)"
+              class="btn-soft px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <span>🐢</span>
+              <span class="zh-font" data-trad="慢速 0.65x" data-simp="慢速 0.65x">慢速 0.65x</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hint Box -->
+        <div id="hintBox" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2.5 text-center animate-pop">
+          <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider mr-1.5" data-trad="提示" data-simp="提示">提示</span>
+          <span id="hintContent" class="text-sm font-bold text-amber-900 font-mono"></span>
+        </div>
+
+        <!-- Feedback Banner (Shown in Review State) -->
+        <div id="feedbackBanner" class="hidden rounded-xl px-3.5 py-2.5 text-sm font-bold text-center animate-pop"></div>
+
+        <!-- Answer Breakdown Box (Shown on Show Answer or After Submit) -->
+        <div id="answerBox" class="hidden bg-[#F8F7F4] border border-[#E7E5E0] rounded-2xl p-3 space-y-2 animate-pop">
+          <div class="flex items-center justify-between text-[11px] font-bold text-slate-400">
+            <span data-trad="標準答案與拼音拆解" data-simp="标准答案与拼音拆解">標準答案與拼音拆解</span>
+            <span id="answerFullPlain" class="font-mono text-slate-500"></span>
+          </div>
+          <div id="answerPills" class="flex flex-wrap items-center justify-center gap-2">
+            <!-- Character-by-character pills populated by JS -->
+          </div>
+        </div>
+
+        <!-- Input Form -->
+        <form id="answerForm" onsubmit="handleFormSubmit(event)" class="space-y-2.5 pt-1">
+          <div class="flex items-center gap-2">
+            <input
+              id="answerInput"
+              type="text"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              enterkeyhint="done"
+              placeholder="輸入拼音，如 ni3 hao3"
+              class="flex-1 min-w-0 bg-[#F8F7F4] border-2 border-[#E2DFD9] focus:bg-white focus:border-[#2A8C82] focus:outline-none rounded-xl px-3.5 py-3 text-base font-semibold text-slate-800 placeholder:text-slate-400 transition"
+            />
+            <button id="submitBtn" type="submit"
+              class="btn-primary text-white font-bold px-5 py-3 rounded-xl text-sm sm:text-base shrink-0 zh-font">
+              確認
+            </button>
+          </div>
+
+          <!-- Secondary Action Row: Hint / Show Answer / Retry -->
+          <div class="flex items-center justify-between gap-2 pt-0.5">
+            <button id="hintBtn" type="button" onclick="showHint()"
+              class="flex-1 btn-soft py-2 px-3 rounded-xl text-xs font-bold text-slate-600 flex items-center justify-center gap-1 zh-font">
+              <span>💡</span>
+              <span data-trad="提示" data-simp="提示">提示</span>
+            </button>
+
+            <button id="revealBtn" type="button" onclick="revealAnswer()"
+              class="flex-1 btn-soft py-2 px-3 rounded-xl text-xs font-bold text-slate-600 flex items-center justify-center gap-1 zh-font">
+              <span>👁️</span>
+              <span data-trad="看答案" data-simp="看答案">看答案</span>
+            </button>
+
+            <button id="retryBtn" type="button" onclick="retryCurrentQuestion()"
+              class="hidden flex-1 btn-soft py-2 px-3 rounded-xl text-xs font-bold text-amber-700 border-amber-200 bg-amber-50 flex items-center justify-center gap-1 zh-font">
+              <span>↺</span>
+              <span data-trad="重試此題" data-simp="重试此题">重試此題</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: ROUND SUMMARY ==================== -->
+    <section id="summaryView" class="hidden space-y-4 animate-pop">
+      <div class="bg-white rounded-2xl p-5 border border-[#E7E5E0] shadow-sm text-center space-y-4">
+        <div id="summaryStars" class="text-4xl tracking-widest">⭐⭐⭐</div>
+        <div>
+          <h2 id="summaryTitle" class="text-xl font-extrabold text-slate-800 zh-font">練習完成！</h2>
+          <p id="summarySubtitle" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2.5 pt-1">
+          <div class="bg-[#F8F7F4] rounded-xl p-3">
+            <div id="sumAccuracy" class="text-xl font-extrabold text-[#2A8C82] tabular-nums">100%</div>
+            <div class="text-[11px] font-semibold text-slate-500 mt-0.5" data-trad="正確率" data-simp="正确率">正確率</div>
+          </div>
+          <div class="bg-[#F8F7F4] rounded-xl p-3">
+            <div id="sumScore" class="text-xl font-extrabold text-[#E05A47] tabular-nums">100</div>
+            <div class="text-[11px] font-semibold text-slate-500 mt-0.5" data-trad="得分" data-simp="得分">得分</div>
+          </div>
+          <div class="bg-[#F8F7F4] rounded-xl p-3">
+            <div id="sumStreak" class="text-xl font-extrabold text-amber-600 tabular-nums">10</div>
+            <div class="text-[11px] font-semibold text-slate-500 mt-0.5" data-trad="最高連對" data-simp="最高连对">最高連對</div>
+          </div>
+        </div>
+
+        <!-- Missed Phrases Review List -->
+        <div id="missedSection" class="hidden text-left pt-2 border-t border-slate-100 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-600 zh-font" data-trad="待加強詞語" data-simp="待加强词语">待加強詞語</span>
+            <span id="missedCountBadge" class="text-[11px] font-bold text-[#E05A47]"></span>
+          </div>
+          <div id="missedList" class="space-y-1.5 max-h-56 overflow-y-auto pr-1"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-2 pt-2">
+          <button id="reviewMissedBtn" type="button" onclick="startMissedReview()"
+            class="hidden w-full btn-jade text-white font-bold py-3 px-4 rounded-2xl text-sm zh-font">
+            🔁 複習錯題
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="startMixRound()"
+              class="btn-primary text-white font-bold py-3 px-4 rounded-2xl text-sm zh-font"
+              data-trad="🔀 再來一輪" data-simp="🔀 再来一轮">🔀 再來一輪</button>
+            <button type="button" onclick="goHome()"
+              class="btn-soft text-slate-700 font-bold py-3 px-4 rounded-2xl text-sm zh-font"
+              data-trad="選擇主題" data-simp="选择主题">選擇主題</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification (No alert/confirm) -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200 bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap">
+  </div>
+
+  <!-- ==================== APPLICATION SCRIPT ==================== -->
+  <script>
+    /* ==========================================================
+       1. SIMPLIFIED -> TRADITIONAL CONVERSION MAP
+       ========================================================== */
+    const S2T_PAIRS =
+      '两兩万萬亿億颜顏红紅绿綠蓝藍浅淺亲親戚戚双雙们們门門父父妈媽妇婦兄兄姐姊儿兒爷爺孙孫舅舅侄姪继繼岁歲纪紀闰閏前前个個这這时時間间点點钟鐘晓曉晚晚昼晝闹鬧钟鐘表錶针針现現过過刚剛会會儿兒段段经經准準迟遲终終食食饭飯面麵条條义義意意谷穀类類鸡雞肉肉猪豬腿腿熏燻肠腸丸丸鱼魚蔬蔬鲜鮮干乾奶酪酪酸酸优優黄黃油油激激早早餐餐饭飯午午晚晚正正主主头頭盘盤配配甜甜點點菜菜肴餚蛋蛋煎煎炒炒煮煮饼餅烤烤圆圓羊羊角角华華薄薄卷捲脆脆干乾酥酥糕糕馅餡饺餃萨薩式式自自助助桌桌麦麥粥粥吐吐鲱鯡果果快快店店汉漢堡堡套套热熱狗狗炸炸块塊薯薯条條明明治治单單总總汇匯串串沙沙拉拉什什锦錦汤湯炖燉酱醬橘橘芥芥末末咖咖喱喱醋醋调調汁汁装裝飾飾料料枫楓浸浸甜甜味味开開胃胃饮飲咖咖啡啡茶茶牛牛奶奶软軟罐罐巧巧克克力力酒酒吸吸管管烹烹手法法油油制製清清蒸蒸烘烘风風腌醃渍漬捣搗糊糊状狀浇澆重重新新加加热熱单單价價目目外外带帶送送内內用用托托巾巾纸紙摊攤勺勺量量矿礦泉泉来來瓶瓶苏蘇打打奎奎宁寧乐樂汽汽柠檸檬檬碳碳酸酸非非苹蘋葡葡萄萄菠菠萝蘿豆豆浆漿粉粉昔昔草草莓莓豆豆末末浓濃縮縮拿拿铁鐵卡卡布布奇奇诺諾滤濾冰冰叶葉菊菊花花荷荷药藥乌烏龙龍黑黑普普洱洱观觀音音袍袍参參井井碧碧螺螺春春毫毫银銀针針祁祁门門茉茉莉莉香香片片道道功功夫夫泡泡壶壺杯杯馆館啤啤酒酒苦苦烈烈葡葡萄萄玫玫瑰瑰槟檳雪雪利利波波尔爾图圖威威士士忌忌伏伏特特加加朗朗姆姆杜杜松松子子舌舌兰蘭地地堪堪培培精精无無糖糖沫沫港港铁鐵地地站站车車线線换換乘乘终終台臺出出入入口口程程票票八八达達通通费費岛島坚堅尼尼城城大大湾灣仔仔铜銅锣鑼炮炮山山北北角角鲗鰂涌湧太太古古河河筲筲箕箕杏杏邨邨柴柴荃荃尖尖沙沙咀咀佐佐敦敦麻麻旺旺子子深深埗埗长長荔荔枝枝美美孚孚景景葵葵芳芳兴興窝窩口口观觀塘塘埔埔何何文文田田石石硖峽尾尾九九乐樂富富仙仙钻鑽石石彩彩虹虹头頭蓝藍调調岭嶺将將军軍澳澳坑坑宝寶琳琳康康东東奥奧运運南南昌昌青青衣衣欣欣屯屯马馬乌烏溪溪鞍鞍恒恆门門一一围圍公公庙廟显顯径徑启啟德德宋宋皇皇瓜瓜红紅磡磡柯柯甸甸西西锦錦路路元元朗朗朗朗屏屏水水兆兆康康会會展展火火炭炭场場墟墟和和粉粉罗羅湖湖落落洲洲海海洋洋园園竹竹利利怡怡迪迪士士尼尼机機博博览覽馆館气氣预預报報空空气氣污污染染阳陽亮亮云雲晴晴阴陰雾霧霭靄极極紫紫外外雨雨阵陣暴暴洪洪雪雪夹夾结結雹雹霜霜风風刮刮狂狂季季台臺飓颶卷捲雷雷打打闪閃电電冷冷温溫暖暖凉涼度度燥燥潮潮湿濕润潤层層对對流流同同间間逸逸臭臭氧氧离離伞傘衣衣靴靴朗朗媚媚怎怎样樣东東向向方方位位南南西西北北上上面面下下面面前前后后里裏旁旁边邊对對中中边邊左左右右转轉直直行行经經离離地地方方问問指指迷迷距距离離近近远远附附近近米米里裏英英尺尺走走拐拐情情绪緒感感高高兴興快快乐樂兴興奮奮信信豪豪喜喜欢歡爱愛难難悲悲伤傷累累无無聊聊生生气氣愤憤怒怒烦煩躁躁害害怕怕担擔心心忧憂虑慮紧緊張張惊驚恐恐讶訝震震惊驚困困惑惑尴尷尬尬羞羞涩澀身身体體健健康康头頭发髮脖脖子子喉喉咙嚨皮皮肤膚神神经經器器官官疾疾病病脸臉额額眼眼睛睛眉眉毛毛睫睫毛毛鼻鼻子子耳耳朵朵嘴嘴巴巴口口唇唇牙牙齿齒舌舌头頭下下巴巴颊頰胡鬍子子肩肩膀膀胸胸部部背背腰腰肚肚子子臀臀部部臂臂胳胳膊膊肘肘腕腕手手掌掌拳拳指指甲甲关關节節甲甲拇拇食食中中无無名名小小腿腿膝膝盖蓋踝踝脚脚跟跟背背足足弓弓球球侧側趾趾内內脏臟脑腦心心肺肺肝肝胃胃肾腎肠腸膀膀胱胱血血液液管管动動脈脈静靜肌肌肉肉骨骨软軟腱腱韧韌带帶呼呼吸吸系系统統消消化化骨骨骼骼职职业業工工作作老老板板同同事事员員工工资資医医生生护護士士牙牙药藥剂劑师師兽獸配配镜鏡老老师師学学生生教教授授校校长長图圖书書管管理理经经理理秘秘书書接接待待话話务務会會计計律律师師法法官官工工程程企企业業家家商商人人员員银銀行行金金融融房房产產旅旅行行代代理理警警察察消消防防队隊士士兵兵保保安安邮郵递遞公公务務农农民民渔漁工工人人电电水水管管木木匠匠修修理理机机械械建建筑築园園丁丁裁裁缝縫纫紉珠珠宝寶屠屠户戶司司机機出出租租公公共共汽汽卡卡飞飛行行水水手手空空小小店店售售货貨花花蔬蔬菜菜贩販厨厨服服务務侍侍者者酒酒保保理理发髮美美清清洁潔艺艺术術画画家家雕雕塑塑歌歌手手音音乐樂舞舞蹈蹈演演员員作作家家编编辑輯记记者者新新闻聞播播音音摄摄影影制製图圖运运动動科科学学程程序序建建筑築交交通通车车辆輛乘乘客客开开骑骑票票堵堵优優步步汽汽车車跑跑出出租租公公交交小小卡卡面面包包垃垃圾圾自自行行摩摩托托三三轮輪马马救救护護警警火火车车地地铁鐵高高铁鐵电电车车站站台臺飞飞机机机机场場直直升升航航班班船船渡渡轮輪游遊艇艇港港口口马马路路高高速速桥桥红红绿绿灯灯加加油油停停车车巴巴士士路路线線售售票票处处坐坐打打上上下下换换购购物物买買卖賣东东西西商商品品其其他他一一共共决决定定商商店店超超市市市市场場中中心心百百货貨便便利利书书店店面面包包药药服服装装时时装装大大厅廳层層自自动动扶扶梯梯电电梯梯更更衣衣室室指指南南招招牌牌卫卫生生间間婴婴儿儿儿儿童童箱箱包包鞋鞋靴靴衣衣服服衬衬衫衫上上衣衣裤裤子子牛牛仔仔裙裙子子袜袜子子鞋鞋帽帽子子围围巾巾腰腰带带领领带带手手表表眼眼镜镜化化妆妆品品玩玩具具钱钱价价格格现现金金找找零零发发票票打打折折特特价价免免税税信信用用卡卡付付退退款款车车袋袋客客户户网网络络送送货货顾顾客客收收款款银银出出纳纳贵贵便便宜宜大大尺尺寸寸质质量量逛逛街街银银行行柜柜台台窗窗口口存存折折税税金金额额宣宣传传页页账账户户号号活活期期储储蓄蓄卡卡借借记记密密码码货货币币纸纸币币硬硬币币存存取取转转账账直直接接付付款款兑兑换换汇汇率率利利息息率率汇汇款款余余额额手手续续费费签签名名贷贷款款抵抵押押透透支支支支票票簿簿存存根根单单提提款款机机屏屏幕幕按按键键区区插插口口外外币币人人美美元元港港欧欧英英镑镑日日元元块块角角毛毛浆浆果果核核柑柑橘橘篮篮苹苹果果梨梨桃桃油油李李杏杏樱樱柿柿石石榴榴榅榅桲桲枣枣葡葡萄萄橙橙橘橘细细皮皮无无核核蜜蜜柠柠檬檬青青酸酸柚柚金金牙牙买买加加丑丑草草莓莓蓝蓝树树覆覆盆盆黑黑罗罗甘甘蔓蔓越越灯灯笼笼醋醋栗栗红红白白西西瓜瓜哈哈密密甜甜蜜蜜香香蕉蕉菠菠萝萝芒芒果果木木番番椰椰子子猕猕猴猴火火龙龙荔荔枝枝龙龙眼眼榴榴莲莲百百香香西西番番莲莲石石榴榴杨杨桃桃仙仙人人掌掌费费约约鳄鳄梨梨大大黄黄外外皮皮瓜瓜肉肉瓤瓤籽籽瓣瓣海海绵绵层层汁汁液液纤纤维维新新鲜鲜多多汁汁甜甜酸酸脆脆烂烂白白菜菜嫩嫩圆圆油油菠菠生生莴莴苣苣豆豆瓣瓣苦苦菊菊红红球球芝芝麻麻叶叶酸酸模模蒲蒲公公英英韭韭芹芹卷卷心心羽羽衣衣甘甘蓝蓝抱抱子子球球茎茎西西兰兰花花菜菜椰椰芜芜菁菁胡胡萝萝卜卜白白小小土土豆豆马马铃铃薯薯红红薯薯芋芋头头木木山山药药莲莲藕藕甜甜荸荸荠荠菊菊块块根根芹芹欧欧洲洲防防风风辣辣姜姜西西红红柿柿番番茄茄茄茄子子黄黄瓜瓜青青椒椒辣辣椒椒苦苦瓜瓜玉玉米米羊羊角角豆豆南南瓜瓜西西葫葫芦芦密密生生冬冬橡橡果果洋洋葱葱头头葱葱韭韭大大蒜蒜四四季季豆豆红红花花蚕蚕豌豌黄黄豆豆芽芽蘑蘑菇菇香香菇菇块块菌菌竹竹笋笋芦芦朝朝鲜鲜蓟蓟茴茴香香棕棕榈榈芯芯豆豆腐腐面面包包果果根根叶叶梗梗芯芯小小蒜蒜种种子子仁仁有有机机栽栽培培冷冷冻冻生生苦苦辣辣硬硬尖尖塑塑料料袋袋生生病病症症状状疼疼健健康康病病毒毒传传染染感感染染感感冒冒发发烧烧咳咳嗽嗽打打喷喷嚏嚏流流鼻鼻涕涕血血头头痛痛偏偏肚肚子子胃胃嗓嗓子子牙牙拉拉腹腹泻泻呕呕吐吐恶恶心心晕晕昏昏厥厥寒寒战战痉痉挛挛疲疲劳劳过过敏敏枯枯草草热热皮皮疹疹湿湿疹疹流流感感水水痘痘麻麻疹疹腮腮腺腺炎炎肺肺炎炎新新冠冠癌癌症症糖糖尿尿病病血血压压高高心心脏脏肌肌梗梗塞塞中中风风哮哮喘喘癫癫痫痫医医院院诊诊所所药药打打针针处处方方看看吃吃康康复复体体温温家家居居房房子子屋屋公公寓寓大大楼楼建建筑筑物物楼楼层层地地下下室室阁阁楼楼房房间间门门窗窗户户墙墙壁壁天天花花板板地地板板屋屋顶顶楼楼梯梯平平台台栏栏杆杆扶扶手手花花园园庭庭院院车车库库钥钥匙匙锁锁独独立立式式半半栋栋住住宅宅连连排排平平房房增增建建部部分分房房客客东东租租用用前前厅厅廊廊灯灯垫垫铃铃环环闩闩链链对对讲讲器器防防盗盗警警报报信信箱箱小小径径檐檐槽槽烟烟囱囱瓦瓦片片百百叶叶窗窗阳阳台台客客厅厅卧卧室室厨厨房房浴浴室室洗洗手手间间厕厕所所餐餐厅厅书书房房家家具具沙沙发发桌桌子子茶茶几几书书桌桌椅椅子子书书架架搁搁橱橱柜柜床床枕枕头头被被子子衣衣柜柜抽抽屉屉镜镜子子地地毯毯窗窗帘帘灯灯台台开开关关电电源源插插座座画画植植物物盆盆栽栽水水龙龙头头闹闹钟钟水水槽槽锅锅碗碗盘盘子子筷筷子子勺勺子子杯杯子子马马桶桶淋淋浴浴浴浴缸缸毛毛巾巾牙牙刷刷膏膏肥肥皂皂洗洗发发水水电电器器冰冰箱箱炉炉子子火火烤烤箱箱微微波波炉炉面面包包机机水水壶壶空空调调电电风风扇扇叶叶暖暖气气片片电电暖暖器器对对流流热热水水器器洗洗衣衣机机吸吸尘尘器器室室内内系系统统娱娱乐乐电电视视平平板板显显示示屏屏高高清清晰晰度度机机顶顶盒盒有有线线卫卫星星天天线线流流媒媒体体无无线线网网络络节节目目故故事事片片广广告告收收费费频频道道收收音音机机数数码码保保真真音音响响立立体体声声功功率率放放大大器器音音箱箱架架耳耳机机音音量量遥遥控控器器播播放放器器电电唱唱机机激激光光盘盘光光盘盘盒盒式式磁磁带带录录音音机机便便携携摄摄像像机机视视频频游游戏戏操操纵纵手手柄柄控控制制台台数数字字接接目目杯杯暂暂停停停停止止倒倒带带快快进进录录制制换换调调看看开开关关动动物物哺哺乳乳爬爬行行两两栖栖无无脊脊椎椎昆昆虫虫鸟鸟鱼鱼狗狗小小猫猫兔兔子子仓仓鼠鼠金金鱼鱼丝丝雀雀猪猪牛牛羊羊山山马马驴驴鸡鸡鸭鸭子子鹅鹅火火老老虎虎狮狮子子大大象象熊熊北北极极熊熊猫猫树树袋袋猩猩猩猩猴猴子子狼狼狐狐狸狸鹿鹿长长颈颈斑斑袋袋鼠鼠犀犀牛牛河河马马松松鼠鼠刺刺猬猬浣浣熊熊水水獭獭蝙蝙蝠蝠家家老老麻麻雀雀鹰鹰猫猫头头鸽鸽子子天天鹅鹅企企鹦鹦鹉鹉乌乌鸦鸦孔孔雀雀燕燕子子啄啄木木蜂蜂火火烈烈海海鸥鸥鲨鲨鱼鱼鲸鲸剑剑豚豚豹豹狮狮象象马马章章水水母母星星螃螃蟹蟹虾虾贻贻贝贝龟龟乌乌蝴蝴蝶蝶蛾蛾毛毛虫虫蜜蜜蜂蜂蚂蚂蚁蚁白白蚊蚊子子苍苍蝇蝇蜻蜻蜓蜓蚱蚱蜢蜢蟋蟋蟀蟀螳螳螂螂蟑蟑螂螂瓢瓢虫虫蜘蜘蛛蛛蝎蝎子子蜈蜈蚣蚣蜗蜗牛牛蛞蛞蝓蝓蚯蚯蚓蚓蛇蛇蜥蜥蜴蜴鳄鳄鱼鱼短短吻吻青青蛙蛙蟾蟾蜍蜍蝌蝌蚪蚪蝾蝾螈螈吻吻喙喙爪爪尾尾角角蹄蹄长长牙牙羽羽毛毛翅翅膀膀触触角角背背鳍鳍胸胸育育儿儿袋袋茧茧世世界界地地理理地地球球地地图图大大洲洲海海洋洋国国家家首首都都边边界界国国籍籍旗旗赤赤道道半半球球纬纬度度经经度度北北极极南南亚亚洲洲欧欧洲洲非非洲洲美美洲洲洋洋太太平平西西印印度度冰冰中中国国北北京京香香港港澳澳门门台台湾湾日日本本东东京京韩韩国国首首尔尔朝朝鲜鲜平平壤壤新新德德里里泰泰国国曼曼谷谷越越南南河河内内新新加加坡坡马马来来西西亚亚吉吉隆隆坡坡印印度度尼尼西西亚亚雅雅加加达达菲菲律律宾宾马马尼尼拉拉沙沙特特阿阿拉拉伯伯利利雅雅得得以以色色列列耶耶路路撒撒冷冷英英国国伦伦敦敦法法国国巴巴黎黎德德国国柏柏林林意意大大利用罗罗马马西西班班牙亚马马德德里里葡葡萄萄牙牙里里斯斯本本荷荷兰兰阿阿姆姆斯斯特特丹丹瑞瑞士士伯伯尔尔尼尼瑞瑞典典斯斯德德哥哥尔尔摩摩希希腊腊雅雅典典爱爱尔尔兰兰都都俄俄罗罗斯斯莫莫斯斯科科美美国国华华盛盛顿顿加加拿拿大大渥渥太太华华墨墨西西哥哥城城巴巴西西利利亚亚阿阿根根廷廷布布宜宜诺诺斯斯艾艾利利斯斯智智利利圣圣地地亚亚哥哥秘秘鲁鲁利利马马古古巴巴哈哈瓦瓦那那埃埃及及开开罗罗南南非非比比勒勒陀陀利利亚亚尼尼日日阿阿布布贾贾肯肯尼尼亚亚内内罗罗毕毕摩摩洛洛哥哥拉拉巴巴特特埃埃塞塞俄俄亚亚的的斯斯贝贝澳澳大大堪堪培培拉拉新新西西兰兰惠惠灵灵顿顿斐斐济济苏苏瓦瓦中中文文汉汉语语英英语语男男装装女女童童制制服服恤恤马马球球衫衫毛毛衣衣卫卫开开背背心心马马甲甲西西裤裤短短打打底底连连衣衣裙裙大大衣衣夹夹克克羽羽绒绒服服风风衣衣西西装装外外套套内内衣衣裤裤文文胸胸罩罩丝丝袜袜睡睡衣衣浴浴袍袍泳泳皮皮鞋鞋运运动动帆帆布布凉凉拖拖人人字字高高跟跟带带底底手手套套皮皮带带领领结结墨墨镜镜手手提提包包裹背背包包钱钱包包首首饰饰戒戒指指项项链链耳耳环环棉棉布布羊羊毛毛丝丝绸绸亚亚麻麻皮皮革革涤涤纶纶尼尼龙龙蕾蕾丝丝绒绒领领子子袖袖口口口口袋袋兜兜纽纽扣扣拉拉链链下下摆摆衬衬里里合合适适宽宽松松紧紧厚厚薄薄素素色色条条纹纹格格子子穿穿戴戴脱脱试试换换洗洗熨熨成成语语与与谚谚语语俗俗语语歇歇后后熟熟能能生生巧巧温温故故知知新新持持之之以以恒恒锲锲而而不不舍舍全全力力赴赴废废寝寝忘忘食食日日积积月月累累半半途途而而废废三三思思行行未未雨雨绸绸缪缪有有备备无无患患量量力力对对症症下下药药事事功功倍倍一一举举两两得得画画蛇蛇添添足足龙龙点点睛睛守守株株待待兔兔刻刻舟舟求求剑剑掩掩耳耳盗盗铃铃亡亡羊羊补补牢牢拔拔苗苗助助长长自自相相矛矛盾盾井井底底之之蛙蛙班班门门弄弄斧斧滥滥竽竽充充数数南南辕辕北北辙辙纸纸上上谈谈兵兵塞塞翁翁失失马马因因祸祸得得福福帆帆风风顺顺否否极极泰泰来来波波三三折折时时过过境境迁迁日日千千里里实实事事求求是是脚脚踏踏实实地地名名副副其其实实平平易易近近人人见见多多识识广广一一心心意意三三二二不不在在焉焉自自以以为为是是口口是是非非兴兴高高采采烈烈心心花花怒怒放放喜喜出出望望外外提提心心吊吊胆胆垂垂头头丧丧气气目目瞪瞪口口呆呆大大惊惊小小怪怪迫迫不不及及待待一一见见如如故故情情同同手手足足同同甘甘共共苦苦齐齐心心协协力力入入乡乡随随俗俗雪雪中中送送炭炭锦锦上上添添花花将将心心比比心心开开门门见见山山一一针针见见血血滔滔滔滔不不绝绝众众所所周周知知独独一一无无二二举举世世闻闻名名人山人海层层出出不不穷穷风风和和日日丽丽春春暖暖花花开开鸟鸟语语花花香香山山清清水水秀秀秋秋高高气气爽爽冰冰天天雪雪地地电电闪闪雷雷鸣鸣世世外外桃桃源源光光阴阴似似箭箭转转眼眼之之间间一一朝朝一一夕夕日日新新月月异异与与时时俱俱进进争争分分夺夺秒秒年年复复一一遥遥遥遥无无期期循循序序渐渐进进举举一一反反三三融融会会贯贯通通学学以以致致用用不不耻耻下下问问博博览览群群书书一一目目十十行行过过目目不不忘忘滚滚瓜瓜烂烂熟熟青青出出于于蓝蓝井井井井有有条条有有条条不不紊紊各各司司其其职职分分工工合合作作精精打打细细算算得得心心应应手手大大显显身身手手一一举举成成名名力力不不从从心心手手忙忙脚脚乱乱拐拐弯弯抹抹角角实实话话说说一一不不二二一一言言难难尽尽不不言言而而喻喻语语重重心心长长自自言言自自语语七七嘴嘴八八舌舌胡胡说说八八道道哑哑口口无无言言表表里里如如一一光光明明确磊磊落落助助人人为为乐乐舍舍己己为为人人拾拾金金不不昧昧见见义义勇勇为为知知恩恩图图报报忘忘恩恩负负义义两两面面三三刀刀唯唯利利是是图图进进退退两两难难骑骑虎虎难难下下走走投投无无路路山山穷穷水水尽尽柳柳暗暗花花明明雪雪上上加加霜霜火火上上浇浇油油火火烧烧眉眉毛毛迫迫在在眉眉睫睫束束手手无无策策化化险险为为夷夷死死里里逃逃生生微微不不足足道道举举足足轻轻重重千千方方百百计计一一模模一一样样大大同同小小异异半半斤斤八八两两供供不不应应求求物物美美价价廉廉屈屈指指可可数数数数不不胜胜数数名名列列前前茅茅成成千千上上万万活活到到老老学学到到老老耕耕耘耘收收获获寸寸光光阴阴金金千千里里之之行行始始于于足足下下万万事事开开头头难难失失败败成成功功之之母母有有志志者者事事竟竟成成世世上上无无难难事事只只怕怕有有心心人人不不入入虎虎穴穴焉焉得得虎虎子子吃吃一一堑堑长长一一智智欲欲速速则则不不达达心心急急吃吃不不了了热热豆豆腐腐磨磨刀刀不不误误砍砍柴柴工工知知己己知知彼彼百百战战不不殆殆谋谋事事在在人人成成事事在在天天三三人人行行必必有有我我师师三三个个臭臭皮皮匠匠顶顶个个诸诸葛葛亮亮人人不不可可貌貌相相己己所所不不欲欲勿勿施施于于人人路路遥遥知知马马力力日日久久见见人人心心患患难难见见真真情情一一巴巴掌掌拍拍不不响响良良药药苦苦口口忠忠言言逆逆耳耳说说曹曹操操到到远远亲亲不不如如近近邻邻家家和和万万事事兴兴民民以以食食为为天天病病从从口口入入祸祸从从口口出出种种瓜瓜得得瓜瓜种种豆豆得得豆豆前前人人栽栽树树后后人人乘乘凉凉少少壮壮不不努努力力老老大大徒徒伤伤悲悲只只要要功功夫夫深深铁铁杵杵磨磨成成针针台台上上分分钟钟台台下下十十年年功功书书山山有有路路勤勤为为径径好好记记性性不不如如烂烂笔笔头头授授人人以以鱼鱼渔渔留留得得青青山山在在不不怕怕没没柴柴烧烧车车到到山山前前必必有有路路船船到到桥桥头头自自然然直直不不怕怕万万一一小小心心驶驶得得万万年年船船天天有有不不测测风风云云旦旦夕夕祸祸福福大大难难不不死死必必有有后后福福天天上上没没有有不不散散的的筵筵席席近近朱朱者者赤赤近近墨墨者者黑黑物物以以类类聚聚人人以以群群分分百百闻闻不不如如一一见见眼眼见见为为实实耳耳听听为为虚虚君君子子一一言言驷驷马马难难追追忍忍一一时时风风平平浪浪静静退退一一歩歩海海阔阔天天空空生生龙龙活活虎虎龙龙马马精精神神飞飞凤凤舞舞望望子子成成龙龙马马到到成成功功一一马马当当先先虎虎头头蛇蛇尾尾狐狐假假虎虎威威对对牛牛弹弹琴琴鹤鹤立立鸡鸡群群如如鱼鱼得得水水惊惊弓弓之之鸟鸟指指鹿鹿为为马马九九牛牛一一毛毛眼眼高高手手低低心心灵灵手手巧巧手手足足无无措措袖袖手手旁旁观观目目不不转转睛睛有有目目共共睹睹耳耳目目一一新新面面红红耳耳赤赤眉眉飞飞色色舞舞头头头头是是道道一一五五一一十十三三三三两两两两三三言言两两语语四四面面八八方方五五花花八八门门七七上上八八下下十十全全十十美美十十有有八八九九百百发发百百中中千千载载难难逢逢万万无无一一失失家家常常便便饭饭津津津津有有味味垂垂涎涎三三尺尺狼狼吞吞虎虎咽咽苦苦尽尽甘甘来来画画饼饼充充饥饥';
+
+    // Explicit Simplified -> Traditional map for characters that actually differ
+    const S2T_MAP = {
+      '两':'兩','万':'萬','亿':'億','颜':'顏','红':'紅','绿':'綠','蓝':'藍','浅':'淺','亲':'親',
+      '双':'雙','们':'們','门':'門','妈':'媽','妇':'婦','儿':'兒','爷':'爺','孙':'孫','继':'繼',
+      '岁':'歲','纪':'紀','闰':'閏','个':'個','这':'這','时':'時','间':'間','点':'點','钟':'鐘',
+      '晓':'曉','昼':'晝','闹':'鬧','针':'針','现':'現','过':'過','刚':'剛','会':'會','经':'經',
+      '准':'準','迟':'遲','终':'終','饭':'飯','面':'麵','条':'條','义':'義','谷':'穀','类':'類',
+      '鸡':'雞','猪':'豬','肠':'腸','鱼':'魚','鲜':'鮮','干':'乾','优':'優','黄':'黃','头':'頭',
+      '盘':'盤','饼':'餅','圆':'圓','华':'華','卷':'捲','馅':'餡','饺':'餃','萨':'薩','麦':'麥',
+      '鲱':'鯡','汉':'漢','热':'熱','块':'塊','单':'單','总':'總','汇':'匯','锦':'錦','汤':'湯',
+      '炖':'燉','酱':'醬','调':'調','装':'裝','饰':'飾','枫':'楓','开':'開','饮':'飲','软':'軟',
+      '制':'製','风':'風','腌':'醃','渍':'漬','捣':'搗','状':'狀','浇':'澆','价':'價','带':'帶',
+      '内':'內','纸':'紙','摊':'攤','矿':'礦','来':'來','苏':'蘇','宁':'寧','乐':'樂','柠':'檸',
+      '檬':'檬','苹':'蘋','萝':'蘿','浆':'漿','浓':'濃','缩':'縮','铁':'鐵','诺':'諾','滤':'濾',
+      '叶':'葉','药':'藥','乌':'烏','龙':'龍','观':'觀','参':'參','银':'銀','壶':'壺','馆':'館',
+      '尔':'爾','图':'圖','兰':'蘭','无':'無','铁':'鐵','车':'車','线':'線','换':'換','台':'臺',
+      '达':'達','费':'費','岛':'島','坚':'堅','湾':'灣','铜':'銅','锣':'鑼','鲗':'鰂','长':'長',
+      '兴':'興','窝':'窩','硖':'峽','钻':'鑽','岭':'嶺','将':'將','军':'軍','宝':'寶','东':'東',
+      '奥':'奧','运':'運','马':'馬','恒':'恆','围':'圍','庙':'廟','显':'顯','径':'徑','启':'啟',
+      '罗':'羅','园':'園','机':'機','览':'覽','气':'氣','预':'預','报':'報','污':'污','阳':'陽',
+      '云':'雲','阴':'陰','雾':'霧','霭':'靄','极':'極','阵':'陣','夹':'夾','结':'結','飓':'颶',
+      '闪':'閃','电':'電','温':'溫','凉':'涼','湿':'濕','润':'潤','层':'層','对':'對','离':'離',
+      '伞':'傘','样':'樣','边':'邊','转':'轉','问':'問','远':'遠','绪':'緒','难':'難','伤':'傷',
+      '愤':'憤','担':'擔','忧':'憂','虑':'慮','紧':'緊','张':'張','惊':'驚','讶':'訝','尴':'尷',
+      '尬':'尬','涩':'澀','体':'體','发':'髮','咙':'嚨','肤':'膚','经':'經','脸':'臉','额':'額',
+      '齿':'齒','颊':'頰','胡':'鬍','脏':'臟','脑':'腦','肾':'腎','肠':'腸','动':'動','脉':'脈',
+      '静':'靜','韧':'韌','统':'統','职':'職','业':'業','员':'員','资':'資','医':'醫','护':'護',
+      '剂':'劑','师':'師','兽':'獸','镜':'鏡','学':'學','书':'書','理':'理','计':'計','律':'律',
+      '企':'企','产':'產','队':'隊','邮':'郵','递':'遞','务':'務','农':'農','渔':'漁','筑':'築',
+      '缝':'縫','纫':'紉','户':'戶','飞':'飛','货':'貨','贩':'販','厨':'廚','洁':'潔','艺':'藝',
+      '术':'術','画':'畫','乐':'樂','剧':'劇','辑':'輯','记':'記','闻':'聞','摄':'攝','辆':'輛',
+      '骑':'騎','轮':'輪','桥':'橋','购':'購','买':'買','卖':'賣','决':'決','场':'場','厅':'廳',
+      '卫':'衛','婴':'嬰','裤':'褲','袜':'襪','围':'圍','领':'領','妆':'妝','钱':'錢','现':'現',
+      '网':'網','络':'絡','顾':'顧','纳':'納','贵':'貴','质':'質','柜':'櫃','账':'賬','号':'號',
+      '储':'儲','蓄':'蓄','码':'碼','币':'幣','兑':'兌','余':'餘','续':'續','签':'簽','贷':'貸',
+      '选':'選','屏':'屏','键':'鍵','区':'區','镑':'鎊','篮':'籃','樱':'櫻','枣':'棗','细':'細',
+      '丑':'醜','树':'樹','罗':'羅','笼':'籠','猕':'獼','莲':'蓮','杨':'楊','约':'約','鳄':'鱷',
+      '绵':'綿','纤':'纖','维':'維','烂':'爛','莴':'萵','兰':'蘭','芜':'蕪','铃':'鈴','藕':'藕',
+      '荸':'荸','欧':'歐','芦':'蘆','鲜':'鮮','蓟':'薊','棕':'棕','榈':'櫚','冻':'凍','塑':'塑',
+      '症':'症','传':'傳','烧':'燒','喷':'噴','泻':'瀉','呕':'嘔','战':'戰','痉':'痙','挛':'攣',
+      '劳':'勞','疟':'瘧','癌':'癌','压':'壓','癫':'癲','痫':'癇','诊':'診','处':'處','复':'復',
+      '楼':'樓','阁':'閣','墙':'牆','栏':'欄','库':'庫','钥':'鑰','锁':'鎖','独':'獨','栋':'棟',
+      '连':'連','讲':'講','铃':'鈴','环':'環','闩':'閂','链':'鏈','盗':'盜','报':'報','厅':'廳',
+      '卧':'臥','厕':'廁','桌':'桌','搁':'擱','橱':'櫥','屉':'屜','帘':'簾','关':'關','龙':'龍',
+      '锅':'鍋','壶':'壺','扇':'扇','尘':'塵','娱':'娛','视':'視','显':'顯','顶':'頂','频':'頻',
+      '数':'數','响':'響','遥':'遙','录':'錄','携':'攜','戏':'戲','纵':'縱','暂':'暫','进':'進',
+      '栖':'棲','鸟':'鳥','仓':'倉','驴':'驢','鸭':'鴨','鹅':'鵝','狮':'獅','颈':'頸','松':'松',
+      '猫':'貓','鸽':'鴿','鹦':'鸚','鹉':'鵡','鸦':'鴉','鸥':'鷗','鲨':'鯊','鲸':'鯨','剑':'劍',
+      '虾':'蝦','贻':'貽','贝':'貝','龟':'龜','蚁':'蟻','苍':'蒼','蝇':'蠅','蝎':'蠍','蜗':'蝸',
+      '蝾':'蝾','鳍':'鰭','茧':'繭','国':'國','纬':'緯','亚':'亞','韩':'韓','宾':'賓','伦':'倫',
+      '马':'馬','荷':'荷','瑞':'瑞','爱':'愛','华':'華','圣':'聖','秘':'秘','卢':'盧','汉':'漢',
+      '语':'語','衬':'襯','衫':'衫','夹':'夾','绒':'絨','裤':'褲','袜':'襪','饰':'飾','项':'項',
+      '绸':'綢','涤':'滌','纶':'綸','丝':'絲','纽':'紐','宽':'寬','紧':'緊','试':'試','谚':'諺',
+      '熟':'熟','锲':'鍥','舍':'捨','废':'廢','寝':'寢','积':'積','绸':'綢','缪':'繆','备':'備',
+      '举':'舉','补':'補','滥':'濫','辕':'轅','辙':'轍','谈':'談','祸':'禍','顺':'順','实':'實',
+      '踏':'踏','识':'識','广':'廣','为':'為','兴':'興','丧':'喪','齐':'齊','协':'協','乡':'鄉',
+      '随':'隨','针':'針','绝':'絕','众':'眾','丽':'麗','鸣':'鳴','阴':'陰','异':'異','与':'與',
+      '夺':'奪','渐':'漸','融':'融','贯':'貫','耻':'恥','群':'群','滚':'滾','蓝':'藍','职':'職',
+      '应':'應','乱':'亂','弯':'彎','话':'話','说':'說','尽':'盡','哑':'啞','义':'義','负':'負',
+      '骑':'騎','穷':'窮','烧':'燒','策':'策','险':'險','轻':'輕','计':'計','样':'樣','应':'應',
+      '败':'敗','堑':'塹','则':'則','误':'誤','敌':'敵','诸':'諸','葛':'葛','响':'響','邻':'鄰',
+      '种':'種','努':'努','笔':'筆','渔':'漁','驶':'駛','测':'測','类':'類','虚':'虛','驷':'駟',
+      '阔':'闊','凤':'鳳','弹':'彈','鹤':'鶴','灵':'靈','瞩':'矚','载':'載','涎':'涎','饥':'飢',
+      '里':'裡','后':'後','面':'面'
+    };
+
+    // Context-aware overrides for Simplified -> Traditional
+    const PHRASE_TRAD_OVERRIDES = {
+      '面条':'麵條','意大利面食':'義大利麵食','面包':'麵包','黑面包':'黑麵包','烤面包':'烤麵包',
+      '小圆面包':'小圓麵包','羊角面包':'羊角麵包','面包车':'麵包車','面包店':'麵包店','烤面包机':'烤麵包機',
+      '面包果':'麵包果','后面':'後面','前面':'前面','上面':'上面','下面':'下面','里面':'裡面','外面':'外面',
+      '对面':'對面','两面三刀':'兩面三刀','四面八方':'四面八方','面红耳赤':'面紅耳赤','面颊':'面頰',
+      '干果':'乾果','干燥':'乾燥','风干':'風乾','薄脆饼干':'薄脆餅乾','头发':'頭髮','理发师':'理髮師',
+      '美发师':'美髮師','洗发水':'洗髮水','发烧':'發燒','发票':'發票','百发百中':'百發百中',
+      '手表':'手錶','智能手表':'智能手錶','秒表':'秒錶','钟表':'鐘錶','表':'錶',
+      '后天':'後天','大后天':'大後天','后年':'後年','之后':'之後','以后':'以後','餐后甜点':'餐後甜點',
+      '脚后跟':'腳後跟','后人':'後人','必有后福':'必有後福','歇后语':'歇後語',
+      '天后':'天后','皇后':'皇后','公里':'公里','英里':'英里','千里':'千里','一日千里':'一日千里',
+      '千里之行，始于足下':'千里之行，始於足下','死里逃生':'死裡逃生','表里如一':'表裡如一',
+      '哪里':'哪裡','这里':'這裡','那里':'那裡','西红柿':'西紅柿','干红':'乾紅','一尘不染':'一塵不染',
+      '云':'雲','多云':'多雲','天有不测风云，人有旦夕祸福':'天有不測風雲，人有旦夕禍福',
+      '台风':'颱風','站台':'站台','月台':'月台','柜台':'櫃檯','阳台':'陽台','台灯':'檯燈',
+      '台湾':'台灣','炮台山':'炮台山','宋皇台':'宋皇臺','松鼠':'松鼠','杜松子酒':'杜松子酒',
+      '宽松':'寬鬆','钟':'鐘','时钟':'時鐘','闹钟':'鬧鐘','金钟':'金鐘','两点钟':'兩點鐘','分钟':'分鐘',
+      '一刻钟':'一刻鐘','准时':'準時','一举两得':'一舉兩得','一举成名':'一舉成名','举世闻名':'舉世聞名',
+      '举一反三':'舉一反三','举足轻重':'舉足輕重','音乐':'音樂','音乐家':'音樂家','快乐':'快樂',
+      '可乐':'可樂','乐富':'樂富','娱乐':'娛樂','助人为乐':'助人為樂'
+    };
+
+    function toTrad(simpStr) {
+      if (PHRASE_TRAD_OVERRIDES[simpStr]) return PHRASE_TRAD_OVERRIDES[simpStr];
+      let out = '';
+      for (const ch of simpStr) {
+        out += S2T_MAP[ch] || ch;
+      }
+      return out;
+    }
+
+    /* ==========================================================
+       2. ALL 25 CURATED TOPIC PACKS (COMPACT FORMAT)
+       Format per entry: "Simplified|pinyin|English" separated by ";"
+       ========================================================== */
+    const RAW_TOPICS = [
+      {
+        id: 'numbers', icon: '🔢', titleTrad: '數字', titleSimp: '数字', daily: true,
+        items:
+          '零|ling2|0 (zero);一|yi1|1 (one);二|er4|2 (two);三|san1|3 (three);四|si4|4 (four);五|wu3|5 (five);' +
+          '六|liu4|6 (six);七|qi1|7 (seven);八|ba1|8 (eight);九|jiu3|9 (nine);十|shi2|10 (ten);' +
+          '二十|er4 shi2|20;三十|san1 shi2|30;四十|si4 shi2|40;五十|wu3 shi2|50;六十|liu4 shi2|60;' +
+          '七十|qi1 shi2|70;八十|ba1 shi2|80;九十|jiu3 shi2|90;二十一|er4 shi2 yi1|21;三十五|san1 shi2 wu3|35;' +
+          '四十八|si4 shi2 ba1|48;九十九|jiu3 shi2 jiu3|99;一百|yi1 bai3|100;两百|liang3 bai3|200;' +
+          '一百零五|yi1 bai3 ling2 wu3|105;一千|yi1 qian1|1,000;一万|yi1 wan4|10,000;一亿|yi1 yi4|100,000,000;两个|liang3 ge4|two (items)'
+      },
+      {
+        id: 'colors', icon: '🎨', titleTrad: '顏色', titleSimp: '颜色', daily: true,
+        items:
+          '颜色|yan2 se4|color;红色|hong2 se4|red;橙色|cheng2 se4|orange;黄色|huang2 se4|yellow;绿色|lv4 se4|green;' +
+          '蓝色|lan2 se4|blue;紫色|zi3 se4|purple;粉色|fen3 se4|pink;棕色|zong1 se4|brown;黑色|hei1 se4|black;' +
+          '白色|bai2 se4|white;灰色|hui1 se4|gray;金色|jin1 se4|gold;银色|yin2 se4|silver;深色|shen1 se4|dark color;浅色|qian3 se4|light color'
+      },
+      {
+        id: 'family', icon: '👨‍👩‍👧‍👦', titleTrad: '家庭成員', titleSimp: '家庭成员', daily: true,
+        items:
+          '家|jia1|home / family;家庭|jia1 ting2|family (household);世代|shi4 dai4|generation;亲戚|qin1 qi5|relatives;' +
+          '夫妻|fu1 qi1|married couple;配偶|pei4 ou3|spouse;双胞胎|shuang1 bao1 tai1|twins;孩子们|hai2 zi5 men5|children (kids);' +
+          '男人|nan2 ren2|man;女人|nv3 ren2|woman;我|wo3|I / me;自己|zi4 ji3|oneself;' +
+          '父母亲|fu4 mu3 qin1|parents;爸爸|ba4 ba5|dad;父亲|fu4 qin1|father (formal);妈妈|ma1 ma5|mom;母亲|mu3 qin1|mother (formal);' +
+          '丈夫|zhang4 fu5|husband;妻子|qi1 zi5|wife;媳妇|xi2 fu5|wife (colloquial);兄弟|xiong1 di4|brothers;哥哥|ge1 ge5|older brother;' +
+          '弟弟|di4 di5|younger brother;姐妹|jie3 mei4|sisters;姊妹|zi3 mei4|sisters (variant);姐姐|jie3 jie5|older sister;' +
+          '妹妹|mei4 mei5|younger sister;大嫂|da4 sao3|older brother\'s wife;姐夫|jie3 fu5|older sister\'s husband;' +
+          '儿子|er2 zi5|son;女儿|nv3 er2|daughter;儿媳|er2 xi2|daughter-in-law;女婿|nv3 xu5|son-in-law;' +
+          '爷爷|ye2 ye5|grandpa (paternal);奶奶|nai3 nai5|grandma (paternal);祖父|zu3 fu4|grandpa (formal);祖母|zu3 mu3|grandma (formal);' +
+          '祖父母|zu3 fu4 mu3|paternal grandparents;姥爷|lao3 ye5|grandpa (maternal, N.);外公|wai4 gong1|grandpa (maternal, S.);' +
+          '姥姥|lao3 lao5|grandma (maternal, N.);外婆|wai4 po2|grandma (maternal, S.);孙子|sun1 zi5|grandson;孙女|sun1 nv3|granddaughter;' +
+          '孙子女|sun1 zi3 nv3|grandchildren;伯伯|bo2 bo5|father\'s older brother;叔叔|shu1 shu5|father\'s younger brother;' +
+          '姑姑|gu1 gu5|father\'s sister;姑妈|gu1 ma1|father\'s married sister;姑父|gu1 fu5|husband of father\'s sister;' +
+          '舅舅|jiu4 jiu5|mother\'s brother;阿姨|a1 yi2|mother\'s sister (auntie);堂哥|tang2 ge1|older paternal male cousin;' +
+          '表兄弟|biao3 xiong1 di4|male cousins (diff. surname);表弟|biao3 di4|younger male cousin (diff. surname);' +
+          '表兄妹|biao3 xiong1 mei4|cousins (mixed);侄女|zhi2 nv3|brother\'s daughter (niece);外甥|wai4 sheng5|sister\'s son (nephew);' +
+          '外甥女|wai4 sheng5 nv3|sister\'s daughter (niece);岳父|yue4 fu4|wife\'s father;岳母|yue4 mu3|wife\'s mother;' +
+          '继父|ji4 fu4|stepfather;继母|ji4 mu3|stepmother;继子|ji4 zi3|stepson;继女|ji4 nv3|stepdaughter'
+      },
+      {
+        id: 'dates', icon: '📅', titleTrad: '日期與星期', titleSimp: '日期与星期', daily: true,
+        items:
+          '星期一|xing1 qi1 yi1|Monday;星期二|xing1 qi1 er4|Tuesday;星期三|xing1 qi1 san1|Wednesday;星期四|xing1 qi1 si4|Thursday;' +
+          '星期五|xing1 qi1 wu3|Friday;星期六|xing1 qi1 liu4|Saturday;星期天|xing1 qi1 tian1|Sunday;' +
+          '一月|yi1 yue4|January;二月|er4 yue4|February;十二月|shi2 er4 yue4|December;' +
+          '天|tian1|day;星期|xing1 qi1|week;月|yue4|month;年|nian2|year;号|hao4|date (spoken);岁|sui4|years of age;' +
+          '世纪|shi4 ji4|century;千年|qian1 nian2|millennium;闰年|run4 nian2|leap year;' +
+          '前天|qian2 tian1|day before yesterday;昨天|zuo2 tian1|yesterday;今天|jin1 tian1|today;明天|ming2 tian1|tomorrow;' +
+          '后天|hou4 tian1|day after tomorrow;大后天|da4 hou4 tian1|three days from now;' +
+          '上个星期|shang4 ge5 xing1 qi1|last week;这个星期|zhe4 ge5 xing1 qi1|this week;下个星期|xia4 ge5 xing1 qi1|next week;' +
+          '上个月|shang4 ge5 yue4|last month;这个月|zhe4 ge5 yue4|this month;下个月|xia4 ge5 yue4|next month;' +
+          '前年|qian2 nian2|year before last;去年|qu4 nian2|last year;今年|jin1 nian2|this year;明年|ming2 nian2|next year;后年|hou4 nian2|year after next'
+      },
+      {
+        id: 'time', icon: '⏰', titleTrad: '時間與鐘錶', titleSimp: '时间与钟表', daily: true,
+        items:
+          '时间|shi2 jian1|time;点|dian3|o\'clock;分|fen1|minute (clock);分钟|fen1 zhong1|minute (duration);秒|miao3|second;' +
+          '小时|xiao3 shi2|hour (duration);半小时|ban4 xiao3 shi2|half an hour;半|ban4|half (:30);刻|ke4|quarter (15 min);一刻钟|yi2 ke4 zhong1|a quarter-hour;' +
+          '拂晓|fu2 xiao3|dawn / daybreak;日出|ri4 chu1|sunrise;早|zao3|early / morning;早上|zao3 shang5|early morning;早晨|zao3 chen2|morning;' +
+          '上午|shang4 wu3|forenoon;中午|zhong1 wu3|noon;正午|zheng4 wu3|high noon;下午|xia4 wu3|afternoon;傍晚|bang4 wan3|toward evening;' +
+          '黄昏|huang2 hun1|twilight / dusk;日落|ri4 luo4|sunset;晚上|wan3 shang5|evening / night;午夜|wu3 ye4|midnight;昼夜|zhou4 ye4|day and night;' +
+          '时钟|shi2 zhong1|clock;闹钟|nao4 zhong1|alarm clock;表|biao3|watch;钟表|zhong1 biao3|timepieces;秒表|miao3 biao3|stopwatch;' +
+          '智能手表|zhi4 neng2 shou3 biao3|smart watch;时针|shi2 zhen1|hour hand;分针|fen1 zhen1|minute hand;秒针|miao3 zhen1|second hand;' +
+          '现在|xian4 zai4|now;过去|guo4 qu4|the past;刚才|gang1 cai2|just now;一会儿|yi2 hui4 er5|a moment;一段时间|yi2 duan4 shi2 jian1|a period of time;' +
+          '之前|zhi1 qian2|before / ago;之后|zhi1 hou4|after;以后|yi3 hou4|later;之间|zhi1 jian1|between;' +
+          '经常|jing1 chang2|often;准时|zhun3 shi2|on time;迟|chi2|late;突然|tu1 ran2|suddenly;终于|zhong1 yu2|finally;' +
+          '一点五分|yi1 dian3 wu3 fen1|1:05;一点十分|yi1 dian3 shi2 fen1|1:10;一点十五分|yi1 dian3 shi2 wu3 fen1|1:15;' +
+          '一点二十分|yi1 dian3 er4 shi2 fen1|1:20;一点半|yi1 dian3 ban4|1:30;两点钟|liang3 dian3 zhong1|2:00;' +
+          '二十分钟|er4 shi2 fen1 zhong1|20 minutes;四十分钟|si4 shi2 fen1 zhong1|40 minutes;现在几点？|xian4 zai4 ji3 dian3|What time is it?'
+      },
+      {
+        id: 'food', icon: '🍜', titleTrad: '食物與烹調', titleSimp: '食物与烹调', daily: true,
+        items:
+          '食物|shi2 wu4|food;米饭|mi3 fan4|cooked rice;面条|mian4 tiao2|noodles;意大利面食|yi4 da4 li4 mian4 shi2|pasta;谷类食品|gu3 lei4 shi2 pin3|cereal / grains;' +
+          '鸡肉|ji1 rou4|chicken;牛肉|niu2 rou4|beef;猪肉|zhu1 rou4|pork;火腿|huo3 tui3|ham;熏肉|xun1 rou4|bacon / smoked meat;' +
+          '香肠|xiang1 chang2|sausage;猪血香肠|zhu1 xue4 xiang1 chang2|black pudding;肉丸|rou4 wan2|meatball;肋排|lei4 pai2|ribs;鱼|yu2|fish;' +
+          '蔬菜|shu1 cai4|vegetable;番茄|fan1 qie2|tomato;水果|shui3 guo3|fruit;鲜果|xian1 guo3|fresh fruit;干果|gan1 guo3|dried fruit & nuts;' +
+          '奶油|nai3 you2|cream;奶酪|nai3 lao4|cheese;酸奶|suan1 nai3|yogurt;黄油|huang2 you2|butter;冰激凌|bing1 ji1 ling2|ice cream;' +
+          '早餐|zao3 can1|breakfast;早饭|zao3 fan4|breakfast (colloq.);午饭|wu3 fan4|lunch;晚饭|wan3 fan4|dinner;正餐|zheng4 can1|main meal;' +
+          '主菜|zhu3 cai4|main course;头盘|tou2 pan2|starter / appetizer;配菜|pei4 cai4|side dish;餐后甜点|can1 hou4 tian2 dian3|dessert;菜肴|cai4 yao2|dish / cuisine;' +
+          '鸡蛋|ji1 dan4|egg;蛋黄|dan4 huang2|egg yolk;煎蛋|jian1 dan4|fried egg;炒鸡蛋|chao3 ji1 dan4|scrambled eggs;煮鸡蛋|zhu3 ji1 dan4|boiled egg;煎蛋饼|jian1 dan4 bing3|omelette;' +
+          '面包|mian4 bao1|bread;黑面包|hei1 mian4 bao1|rye bread;烤面包|kao3 mian4 bao1|toast;小圆面包|xiao3 yuan2 mian4 bao1|bread roll;' +
+          '羊角面包|yang2 jiao3 mian4 bao1|croissant;华夫饼|hua2 fu1 bing3|waffle;薄煎饼|bao2 jian1 bing5|pancake;薄饼卷|bao2 bing3 juan3|tortilla / wrap;' +
+          '薄脆饼干|bao2 cui4 bing3 gan1|cracker;油酥点心|you2 su1 dian3 xin1|pastry;奶油糕点|nai3 you2 gao1 dian3|cream pastry;馅饼|xian4 bing3|pie;饺子|jiao3 zi5|dumpling;比萨饼|bi3 sa4 bing3|pizza;' +
+          '英式早餐|ying1 shi4 zao3 can1|English breakfast;自助早餐|zi4 zhu4 zao3 can1|buffet breakfast;麦片粥|mai4 pian4 zhou1|oatmeal;法式吐司|fa3 shi4 tu3 si1|French toast;果味酸奶|guo3 wei4 suan1 nai3|fruit yogurt;' +
+          '快餐|kuai4 can1|fast food;快餐店|kuai4 can1 dian4|fast-food restaurant;汉堡包|han4 bao3 bao1|hamburger;汉堡套餐|han4 bao3 tao4 can1|burger combo;' +
+          '热狗|re4 gou3|hot dog;炸鸡|zha2 ji1|fried chicken;鸡块|ji1 kuai4|chicken nuggets;薯条|shu3 tiao2|french fries;鱼和薯条|yu2 he2 shu3 tiao2|fish and chips;' +
+          '三明治|san1 ming2 zhi4|sandwich;烤三明治|kao3 san1 ming2 zhi4|toasted sandwich;总汇三明治|zong3 hui4 san1 ming2 zhi4|club sandwich;烤肉|kao3 rou4|barbecue;烤肉串|kao3 rou4 chuan4|kebab / skewer;' +
+          '沙拉|sha1 la1|salad;蔬菜沙拉|shu1 cai4 sha1 la1|vegetable salad;什锦沙拉|shi2 jin3 sha1 la1|mixed salad;汤|tang1|soup;肉汤|rou4 tang1|broth;炒菜|chao3 cai4|stir-fried dish;炖菜|dun4 cai4|stew;' +
+          '酱|jiang4|sauce;果酱|guo3 jiang4|jam;橘子酱|ju2 zi5 jiang4|marmalade;番茄酱|fan1 qie2 jiang4|ketchup;肉酱|rou4 jiang4|meat sauce;芥末|jie4 mo5|mustard;咖喱|ga1 li2|curry;调味|tiao2 wei4|seasoning;' +
+          '油炸|you2 zha2|deep-fry;炒制|chao3 zhi4|stir-fry;煎制|jian1 zhi4|pan-fry;水煮|shui3 zhu3|boil / poach;清蒸|qing1 zheng1|steam;烘制|hong1 zhi4|bake;烤制|kao3 zhi4|roast / grill;熏制|xun1 zhi4|smoke;风干|feng1 gan1|air-dry;腌渍|yan1 zi4|pickle / marinate;浇汁|jiao1 zhi1|drizzle with sauce;重新加热|chong2 xin1 jia1 re4|reheat;' +
+          '菜单|cai4 dan1|menu;价目表|jia4 mu4 biao3|price list;外带|wai4 dai4|takeout;送餐|song4 can1|food delivery;店内用餐|dian4 nei4 yong4 can1|dine in;托盘|tuo1 pan2|tray;餐巾纸|can1 jin1 zhi3|paper napkin;食品摊|shi2 pin3 tan1|food stall'
+      },
+      {
+        id: 'drinks', icon: '🧋', titleTrad: '飲料與茶酒', titleSimp: '饮料与茶酒', daily: true,
+        items:
+          '饮料|yin3 liao4|beverage;酒|jiu3|alcohol / liquor;热饮|re4 yin3|hot drink;麦芽饮料|mai4 ya2 yin3 liao4|malted drink;' +
+          '水|shui3|water;热水|re4 shui3|hot water;矿泉水|kuang4 quan2 shui3|mineral water;自来水|zi4 lai2 shui3|tap water;瓶装水|ping2 zhuang1 shui3|bottled water;苏打水|su1 da2 shui3|soda water;奎宁水|kui2 ning2 shui3|tonic water;' +
+          '可乐|ke3 le4|cola;汽水|qi4 shui3|soda / fizzy drink;软饮料|ruan3 yin3 liao4|soft drink;柠檬水|ning2 meng2 shui3|lemonade;橘子水|ju2 zi5 shui3|orangeade;碳酸饮料|tan4 suan1 yin3 liao4|carbonated drink;' +
+          '果汁|guo3 zhi1|fruit juice;橘子汁|ju2 zi5 zhi1|orange juice;苹果汁|ping2 guo3 zhi1|apple juice;葡萄汁|pu2 tao2 zhi1|grape juice;番茄汁|fan1 qie2 zhi1|tomato juice;菠萝汁|bo1 luo2 zhi1|pineapple juice;' +
+          '牛奶|niu2 nai3|milk;豆浆|dou4 jiang1|soy milk;热巧克力|re4 qiao3 ke4 li4|hot chocolate;可可粉|ke3 ke3 fen3|cocoa powder;咖啡奶昔|ka1 fei1 nai3 xi1|coffee milkshake;草莓奶昔|cao3 mei2 nai3 xi1|strawberry milkshake;巧克力奶昔|qiao3 ke4 li4 nai3 xi1|chocolate milkshake;' +
+          '咖啡|ka1 fei1|coffee;咖啡豆|ka1 fei1 dou4|coffee beans;黑咖啡|hei1 ka1 fei1|black coffee;牛奶咖啡|niu2 nai3 ka1 fei1|coffee with milk;意式浓缩咖啡|yi4 shi4 nong2 suo1 ka1 fei1|espresso;拿铁咖啡|na2 tie3 ka1 fei1|latte;卡布奇诺咖啡|ka3 bu4 ji1 nuo4 ka1 fei1|cappuccino;过滤式咖啡|guo4 lv4 shi4 ka1 fei1|filter coffee;冰咖啡|bing1 ka1 fei1|iced coffee;' +
+          '茶|cha2|tea;茶叶|cha2 ye4|tea leaves;茶包|cha2 bao1|tea bag;红茶|hong2 cha2|black tea;绿茶|lv4 cha2|green tea;奶茶|nai3 cha2|milk tea;柠檬茶|ning2 meng2 cha2|lemon tea;冰茶|bing1 cha2|iced tea;菊花茶|ju2 hua1 cha2|chrysanthemum tea;薄荷茶|bo4 he2 cha2|mint tea;草药茶|cao3 yao4 cha2|herbal tea;' +
+          '黄茶|huang2 cha2|yellow tea;白茶|bai2 cha2|white tea;乌龙茶|wu1 long2 cha2|oolong tea;黑茶|hei1 cha2|dark fermented tea;花茶|hua1 cha2|scented tea;' +
+          '普洱茶|pu3 er3 cha2|Pu\'er tea;铁观音|tie3 guan1 yin1|Tieguanyin;大红袍|da4 hong2 pao2|Da Hong Pao;人参乌龙|ren2 shen1 wu1 long2|ginseng oolong;龙井茶|long2 jing3 cha2|Longjing tea;碧螺春|bi4 luo2 chun1|Biluochun;白毫银针|bai2 hao2 yin2 zhen1|Silver Needle;祁门红茶|qi2 men2 hong2 cha2|Keemun tea;茉莉花茶|mo4 li4 hua1 cha2|jasmine tea;香片|xiang1 pian4|jasmine tea (HK);' +
+          '茶道|cha2 dao4|tea ceremony;功夫茶|gong1 fu5 cha2|gongfu tea;泡茶|pao4 cha2|to brew tea;茶壶|cha2 hu2|teapot;茶杯|cha2 bei1|teacup;茶馆|cha2 guan3|teahouse;' +
+          '啤酒|pi2 jiu3|beer;苦啤酒|ku3 pi2 jiu3|bitter beer;浓烈黑啤酒|nong2 lie4 hei1 pi2 jiu3|stout;苹果酒|ping2 guo3 jiu3|cider;' +
+          '葡萄酒|pu2 tao5 jiu3|wine;红葡萄酒|hong2 pu2 tao2 jiu3|red wine;白葡萄酒|bai2 pu2 tao2 jiu3|white wine;玫瑰红|mei2 gui5 hong2|rosé;香槟酒|xiang1 bin1 jiu3|champagne;雪利酒|xue3 li4 jiu3|sherry;' +
+          '威士忌|wei1 shi4 ji4|whiskey;伏特加酒|fu2 te4 jia1 jiu3|vodka;朗姆酒|lang3 mu3 jiu3|rum;杜松子酒|du4 song1 zi3 jiu3|gin;龙舌兰酒|long2 she2 lan2 jiu3|tequila;白兰地|bai2 lan2 di4|brandy;利口酒|li4 kou3 jiu3|liqueur;开胃酒|kai1 wei4 jiu3|aperitif;吸管|xi1 guan3|drinking straw;泡沫|pao4 mo4|foam / froth'
+      },
+      {
+        id: 'hk_mtr', icon: '🚇', titleTrad: '香港地鐵站', titleSimp: '香港地铁站', daily: true,
+        items:
+          '港铁|gang3 tie3|MTR;地铁|di4 tie3|subway / metro;车站|che1 zhan4|station;换乘站|huan4 cheng2 zhan4|interchange station;换乘|huan4 cheng2|to transfer;终点站|zhong1 dian3 zhan4|terminus;月台|yue4 tai2|platform;出口|chu1 kou3|exit;入口|ru4 kou3|entrance;单程票|dan1 cheng2 piao4|single-journey ticket;八达通|ba1 da2 tong1|Octopus card;车费|che1 fei4|fare;下一站|xia4 yi1 zhan4|next station;' +
+          '坚尼地城|jian1 ni2 di4 cheng2|Kennedy Town;香港大学|xiang1 gang3 da4 xue2|HKU;西营盘|xi1 ying2 pan2|Sai Ying Pun;上环|shang4 huan2|Sheung Wan;中环|zhong1 huan2|Central;金钟|jin1 zhong1|Admiralty;湾仔|wan1 zai3|Wan Chai;铜锣湾|tong2 luo2 wan1|Causeway Bay;天后|tian1 hou4|Tin Hau;炮台山|pao4 tai2 shan1|Fortress Hill;北角|bei3 jiao3|North Point;鲗鱼涌|zei2 yu2 chong1|Quarry Bay;太古|tai4 gu3|Tai Koo;西湾河|xi1 wan1 he2|Sai Wan Ho;筲箕湾|shao1 ji1 wan1|Shau Kei Wan;杏花邨|xing4 hua1 cun1|Heng Fa Chuen;柴湾|chai2 wan1|Chai Wan;' +
+          '尖沙咀|jian1 sha1 zui3|Tsim Sha Tsui;佐敦|zuo3 dun1|Jordan;油麻地|you2 ma2 di4|Yau Ma Tei;旺角|wang4 jiao3|Mong Kok;太子|tai4 zi3|Prince Edward;深水埗|shen1 shui3 bu4|Sham Shui Po;长沙湾|chang2 sha1 wan1|Cheung Sha Wan;荔枝角|li4 zhi1 jiao3|Lai Chi Kok;美孚|mei3 fu2|Mei Foo;荔景|li4 jing3|Lai King;葵芳|kui2 fang1|Kwai Fong;葵兴|kui2 xing1|Kwai Hing;大窝口|da4 wo1 kou3|Tai Wo Hau;荃湾|quan2 wan1|Tsuen Wan;' +
+          '黄埔|huang2 pu3|Whampoa;何文田|he2 wen2 tian2|Ho Man Tin;石硖尾|shi2 xia2 wei3|Shek Kip Mei;九龙塘|jiu3 long2 tang2|Kowloon Tong;乐富|le4 fu4|Lok Fu;黄大仙|huang2 da4 xian1|Wong Tai Sin;钻石山|zuan4 shi2 shan1|Diamond Hill;彩虹|cai3 hong2|Choi Hung;九龙湾|jiu3 long2 wan1|Kowloon Bay;牛头角|niu2 tou2 jiao3|Ngau Tau Kok;观塘|guan1 tang2|Kwun Tong;蓝田|lan2 tian2|Lam Tin;油塘|you2 tang2|Yau Tong;调景岭|diao4 jing3 ling3|Tiu Keng Leng;' +
+          '将军澳|jiang1 jun1 ao4|Tseung Kwan O;坑口|keng1 kou3|Hang Hau;宝琳|bao3 lin2|Po Lam;康城|kang1 cheng2|LOHAS Park;香港|xiang1 gang3|Hong Kong;九龙|jiu3 long2|Kowloon;奥运|ao4 yun4|Olympic;南昌|nan2 chang1|Nam Cheong;青衣|qing1 yi1|Tsing Yi;欣澳|xin1 ao4|Sunny Bay;东涌|dong1 chong1|Tung Chung;' +
+          '乌溪沙|wu1 xi1 sha1|Wu Kai Sha;马鞍山|ma3 an1 shan1|Ma On Shan;恒安|heng2 an1|Heng On;大水坑|da4 shui3 keng1|Tai Shui Hang;石门|shi2 men2|Shek Mun;第一城|di4 yi1 cheng2|City One;沙田围|sha1 tian2 wei2|Sha Tin Wai;车公庙|che1 gong1 miao4|Che Kung Temple;大围|da4 wei2|Tai Wai;显径|xian3 jing4|Hin Keng;启德|qi3 de2|Kai Tak;宋皇台|song4 huang2 tai2|Sung Wong Toi;土瓜湾|tu3 gua1 wan1|To Kwa Wan;红磡|hong2 kan4|Hung Hom;尖东|jian1 dong1|East Tsim Sha Tsui;柯士甸|ke1 shi4 dian4|Austin;荃湾西|quan2 wan1 xi1|Tsuen Wan West;锦上路|jin3 shang4 lu4|Kam Sheung Road;元朗|yuan2 lang3|Yuen Long;朗屏|lang3 ping2|Long Ping;天水围|tian1 shui3 wei2|Tin Shui Wai;兆康|zhao4 kang1|Siu Hong;屯门|tun2 men2|Tuen Mun;' +
+          '会展|hui4 zhan3|Exhibition Centre;旺角东|wang4 jiao3 dong1|Mong Kok East;沙田|sha1 tian2|Sha Tin;火炭|huo3 tan4|Fo Tan;马场|ma3 chang3|Racecourse;大学|da4 xue2|University;大埔墟|da4 bu4 xu1|Tai Po Market;太和|tai4 he2|Tai Wo;粉岭|fen3 ling3|Fanling;上水|shang4 shui3|Sheung Shui;罗湖|luo2 hu2|Lo Wu;落马洲|luo4 ma3 zhou1|Lok Ma Chau;' +
+          '海洋公园|hai3 yang2 gong1 yuan2|Ocean Park;黄竹坑|huang2 zhu2 keng1|Wong Chuk Hang;利东|li4 dong1|Lei Tung;海怡半岛|hai3 yi2 ban4 dao3|South Horizons;迪士尼|di2 shi4 ni2|Disneyland Resort;机场|ji1 chang3|Airport;博览馆|bo2 lan3 guan3|AsiaWorld-Expo'
+      },
+      {
+        id: 'weather', icon: '⛅', titleTrad: '天氣與氣象', titleSimp: '天气与气象', daily: true,
+        items:
+          '天气|tian1 qi4|weather;天气预报|tian1 qi4 yu4 bao4|weather forecast;空气污染|kong1 qi4 wu1 ran3|air pollution;' +
+          '太阳|tai4 yang5|sun;月亮|yue4 liang5|moon;阳光|yang2 guang1|sunshine;云|yun2|cloud;晴|qing2|clear / fine;晴天|qing2 tian1|sunny day;多云|duo1 yun2|cloudy;阴天|yin1 tian1|overcast;雾|wu4|fog;霭|ai3|haze / mist;彩虹|cai3 hong2|rainbow;极光|ji2 guang1|aurora;紫外线|zi3 wai4 xian4|ultraviolet ray;' +
+          '雨|yu3|rain;下雨|xia4 yu3|to rain;阵雨|zhen4 yu3|shower;暴雨|bao4 yu3|torrential rain;洪水|hong2 shui3|flood;' +
+          '雪|xue3|snow;下雪|xia4 xue3|to snow;雨夹雪|yu3 jia1 xue3|sleet;冰|bing1|ice;结冰|jie2 bing1|to freeze;冰雹|bing1 bao2|hail;霜|shuang1|frost;' +
+          '风|feng1|wind;多风|duo1 feng1|windy;刮风|gua1 feng1|to be windy;狂风|kuang2 feng1|gale;季风|ji4 feng1|monsoon;台风|tai2 feng1|typhoon;飓风|ju4 feng1|hurricane;龙卷风|long2 juan3 feng1|tornado;暴风雨|bao4 feng1 yu3|rainstorm;雷雨|lei2 yu3|thunderstorm;雷|lei2|thunder;打雷|da3 lei2|to thunder;闪电|shan3 dian4|lightning;' +
+          '热|re4|hot;冷|leng3|cold;温暖|wen1 nuan3|warm;暖和|nuan3 huo5|warm (colloq.);凉快|liang2 kuai5|cool;温度|wen1 du4|temperature;干燥|gan1 zao4|dry;潮|chao2|damp / humid;湿润|shi1 run4|moist;' +
+          '大气层|da4 qi4 ceng2|atmosphere;对流层|dui4 liu2 ceng2|troposphere;同温层|tong2 wen1 ceng2|stratosphere;中间层|zhong1 jian1 ceng2|mesosphere;热层|re4 ceng2|thermosphere;外逸层|wai4 yi4 ceng2|exosphere;臭氧层|chou4 yang3 ceng2|ozone layer;电离层|dian4 li2 ceng2|ionosphere;' +
+          '雨伞|yu3 san3|umbrella;雨衣|yu3 yi1|raincoat;靴子|xue1 zi5|boots;天气晴朗|tian1 qi4 qing2 lang3|sunny weather;阳光明媚|yang2 guang1 ming2 mei4|sun shines brightly;天气怎么样？|tian1 qi4 zen3 me5 yang4|How\'s the weather?'
+      },
+      {
+        id: 'directions', icon: '🧭', titleTrad: '方向與問路', titleSimp: '方向与问路', daily: true,
+        items:
+          '东|dong1|east;南|nan2|south;西|xi1|west;北|bei3|north;东方|dong1 fang1|the east;南方|nan2 fang1|the south;西方|xi1 fang1|the west;北方|bei3 fang1|the north;东北|dong1 bei3|northeast;东南|dong1 nan2|southeast;西北|xi1 bei3|northwest;西南|xi1 nan2|southwest;' +
+          '上面|shang4 mian4|above / on top;下面|xia4 mian4|below / under;前面|qian2 mian4|in front;后面|hou4 mian4|behind;里面|li3 mian4|inside;外面|wai4 mian4|outside;旁边|pang2 bian1|beside;对面|dui4 mian4|opposite;中间|zhong1 jian1|middle / between;一边|yi1 bian1|one side;' +
+          '左边|zuo3 bian5|left side;右边|you4 bian5|right side;左转|zuo3 zhuan3|turn left;右转|you4 zhuan3|turn right;直行|zhi2 xing2|go straight;一直走|yi4 zhi2 zou3|go straight ahead;经过|jing1 guo4|pass through;离开|li2 kai1|depart / leave;' +
+          '方向|fang1 xiang4|direction;地方|di4 fang5|place / area;问路|wen4 lu4|ask for directions;指路|zhi3 lu4|give directions;迷路|mi2 lu4|lose one\'s way;' +
+          '距离|ju4 li2|distance;近|jin4|near;远|yuan3|far;附近|fu4 jin4|nearby;米|mi3|meter;公里|gong1 li3|kilometer;英尺|ying1 chi3|foot (unit);英里|ying1 li3|mile;在附近|zai4 fu4 jin4|it\'s nearby'
+      },
+      {
+        id: 'emotions', icon: '😊', titleTrad: '情緒與感受', titleSimp: '情绪与感受', daily: true,
+        items:
+          '情绪|qing2 xu4|mood / emotional state;情感|qing2 gan3|feeling / emotion;高兴|gao1 xing4|happy / glad;快乐|kuai4 le4|happy / joyful;兴奋|xing1 fen4|excited;自信|zi4 xin4|self-confident;自豪|zi4 hao2|proud;喜欢|xi3 huan5|to like;爱|ai4|to love;' +
+          '难过|nan2 guo4|sad / upset;悲伤|bei1 shang1|sorrowful;累|lei4|tired;无聊|wu2 liao2|bored;' +
+          '生气|sheng1 qi4|angry;愤怒|fen4 nu4|furious;烦躁|fan2 zao4|irritable / jittery;' +
+          '害怕|hai4 pa4|afraid / scared;担心|dan1 xin1|worried;忧虑|you1 lv4|anxious;紧张|jin3 zhang1|nervous / tense;惊恐|jing1 kong3|terrified;' +
+          '惊讶|jing1 ya4|surprised;震惊|zhen4 jing1|shocked;困惑|kun4 huo4|confused;尴尬|gan1 ga4|awkward / embarrassed;羞涩|xiu1 se4|shy / bashful'
+      },
+      {
+        id: 'body', icon: '🧍', titleTrad: '人體部位', titleSimp: '人体部位',
+        items:
+          '身体|shen1 ti3|body;健康|jian4 kang1|health;头|tou2|head;头发|tou2 fa5|hair;脖子|bo2 zi5|neck;喉咙|hou2 long2|throat;皮肤|pi2 fu1|skin;神经|shen2 jing1|nerve;器官|qi4 guan1|organ;疾病|ji2 bing4|disease;' +
+          '脸|lian3|face;额头|e2 tou2|forehead;眼睛|yan3 jing5|eye;眉毛|mei2 mao5|eyebrow;睫毛|jie2 mao2|eyelash;鼻子|bi2 zi5|nose;耳朵|er3 duo5|ear;嘴巴|zui3 ba5|mouth;嘴唇|zui3 chun2|lips;牙齿|ya2 chi3|tooth;舌头|she2 tou5|tongue;下巴|xia4 ba5|chin;脸颊|lian3 jia2|cheek;胡子|hu2 zi5|beard;' +
+          '肩膀|jian1 bang3|shoulder;胸部|xiong1 bu4|chest;背|bei4|back;腰|yao1|waist;肚子|du4 zi5|belly / abdomen;臀部|tun2 bu4|hip / buttocks;' +
+          '手臂|shou3 bi4|arm;胳膊|ge1 bo5|arm (colloq.);手肘|shou3 zhou3|elbow;手腕|shou3 wan4|wrist;手|shou3|hand;手掌|shou3 zhang3|palm;拳头|quan2 tou5|fist;手指|shou3 zhi3|finger;指甲|zhi3 jia5|fingernail;指关节|zhi3 guan1 jie2|knuckle;甲上皮|jia3 shang4 pi2|cuticle;' +
+          '拇指|mu3 zhi3|thumb;食指|shi2 zhi3|index finger;中指|zhong1 zhi3|middle finger;无名指|wu2 ming2 zhi3|ring finger;小指|xiao3 zhi3|little finger;' +
+          '腿|tui3|leg;大腿|da4 tui3|thigh;膝盖|xi1 gai4|knee;小腿|xiao3 tui3|calf;脚踝|jiao3 huai2|ankle;脚|jiao3|foot;脚后跟|jiao3 hou4 gen1|heel;脚掌|jiao3 zhang3|sole of foot;脚背|jiao3 bei4|top of foot;足弓|zu2 gong1|arch of foot;脚趾|jiao3 zhi3|toe;大趾|da4 zhi3|big toe;小趾|xiao3 zhi3|little toe;趾甲|zhi3 jia3|toenail;' +
+          '内脏|nei4 zang4|internal organs;大脑|da4 nao3|brain;心脏|xin1 zang4|heart;肺|fei4|lung;肝脏|gan1 zang4|liver;胃|wei4|stomach;肾脏|shen4 zang4|kidney;肠|chang2|intestine;膀胱|pang2 guang1|bladder;' +
+          '血液|xue4 ye4|blood;血管|xue4 guan3|blood vessel;动脉|dong4 mai4|artery;静脉|jing4 mai4|vein;' +
+          '肌肉|ji1 rou4|muscle;骨头|gu3 tou5|bone;关节|guan1 jie2|joint;软骨|ruan3 gu3|cartilage;腱|jian4|tendon;韧带|ren4 dai4|ligament;' +
+          '呼吸系统|hu1 xi1 xi4 tong3|respiratory system;消化系统|xiao1 hua4 xi4 tong3|digestive system;神经系统|shen2 jing1 xi4 tong3|nervous system;骨骼系统|gu3 ge2 xi4 tong3|skeletal system'
+      },
+      {
+        id: 'occupations', icon: '💼', titleTrad: '職業', titleSimp: '职业',
+        items:
+          '职业|zhi2 ye4|occupation / job;工作|gong1 zuo4|work;老板|lao3 ban3|boss;同事|tong2 shi4|colleague;员工|yuan2 gong1|employee;工资|gong1 zi1|salary;' +
+          '医生|yi1 sheng1|doctor;护士|hu4 shi5|nurse;牙医|ya2 yi1|dentist;药剂师|yao4 ji4 shi1|pharmacist;兽医|shou4 yi1|vet;配镜师|pei4 jing4 shi1|optician;' +
+          '老师|lao3 shi1|teacher;学生|xue2 sheng5|student;教授|jiao4 shou4|professor;校长|xiao4 zhang3|principal;图书管理员|tu2 shu1 guan3 li3 yuan2|librarian;' +
+          '经理|jing1 li3|manager;秘书|mi4 shu1|secretary;接待员|jie1 dai4 yuan2|receptionist;话务员|hua4 wu4 yuan2|phone operator;会计师|kuai4 ji4 shi1|accountant;律师|lv4 shi1|lawyer;法官|fa3 guan1|judge;工程师|gong1 cheng2 shi1|engineer;企业家|qi3 ye4 jia1|entrepreneur;商人|shang1 ren2|businessperson;银行家|yin2 hang2 jia1|banker;金融家|jin1 rong2 jia1|financier;房地产商|fang2 di4 chan3 shang1|real estate agent;旅行代理|lv3 xing2 dai4 li3|travel agent;' +
+          '警察|jing3 cha2|police officer;消防员|xiao1 fang2 yuan2|firefighter;士兵|shi4 bing1|soldier;保安|bao3 an1|security guard;邮递员|you2 di4 yuan2|mail carrier;公务员|gong1 wu4 yuan2|civil servant;' +
+          '农民|nong2 min2|farmer;渔民|yu2 min2|fisherman;工人|gong1 ren2|worker;电工|dian4 gong1|electrician;水管工|shui3 guan3 gong1|plumber;木匠|mu4 jiang4|carpenter;修理工|xiu1 li3 gong1|mechanic;建筑工人|jian4 zhu4 gong1 ren2|construction worker;园丁|yuan2 ding1|gardener;裁缝|cai2 feng5|tailor;珠宝匠|zhu1 bao3 jiang4|jeweller;屠户|tu2 hu4|butcher;' +
+          '司机|si1 ji1|driver;出租车司机|chu1 zu1 che1 si1 ji1|taxi driver;公共汽车司机|gong1 gong4 qi4 che1 si1 ji1|bus driver;卡车司机|ka3 che1 si1 ji1|truck driver;飞行员|fei1 xing2 yuan2|pilot;水手|shui3 shou3|sailor;空中小姐|kong1 zhong1 xiao3 jie3|flight attendant;' +
+          '店员|dian4 yuan2|shop assistant;售货员|shou4 huo4 yuan2|salesperson;花商|hua1 shang1|florist;鱼贩|yu2 fan4|fishmonger;厨师|chu2 shi1|chef / cook;服务员|fu2 wu4 yuan2|waiter;酒保|jiu3 bao3|bartender;理发师|li3 fa4 shi1|barber;美发师|mei3 fa4 shi1|hairdresser;清洁工|qing1 jie2 gong1|cleaner;' +
+          '艺术家|yi4 shu4 jia1|artist;画家|hua4 jia1|painter;雕塑家|diao1 su4 jia1|sculptor;歌手|ge1 shou3|singer;音乐家|yin1 yue4 jia1|musician;舞蹈演员|wu3 dao3 yan3 yuan2|dancer;演员|yan3 yuan2|actor;女演员|nv3 yan3 yuan2|actress;作家|zuo4 jia1|writer;编辑|bian1 ji2|editor;记者|ji4 zhe3|journalist;新闻播音员|xin1 wen2 bo1 yin1 yuan2|news anchor;摄影师|she4 ying3 shi1|photographer;运动员|yun4 dong4 yuan2|athlete;科学家|ke1 xue2 jia1|scientist;程序员|cheng2 xu4 yuan2|programmer;建筑师|jian4 zhu4 shi1|architect'
+      },
+      {
+        id: 'transport', icon: '🚌', titleTrad: '交通工具', titleSimp: '交通工具', daily: true,
+        items:
+          '交通|jiao1 tong1|transportation;车辆|che1 liang4|vehicle;乘客|cheng2 ke4|passenger;开车|kai1 che1|to drive;骑|qi2|to ride;车票|che1 piao4|ticket;堵车|du3 che1|traffic jam;优步|you1 bu4|Uber;' +
+          '汽车|qi4 che1|car;跑车|pao3 che1|sports car;出租车|chu1 zu1 che1|taxi;公共汽车|gong1 gong4 qi4 che1|bus (formal);公交车|gong1 jiao1 che1|bus (colloq.);小巴|xiao3 ba1|minibus;卡车|ka3 che1|truck;面包车|mian4 bao1 che1|van;垃圾车|la1 ji1 che1|garbage truck;自行车|zi4 xing2 che1|bicycle;摩托车|mo2 tuo1 che1|motorcycle;三轮车|san1 lun2 che1|tricycle;马车|ma3 che1|horse carriage;救护车|jiu4 hu4 che1|ambulance;消防车|xiao1 fang2 che1|fire engine;警车|jing3 che1|police car;' +
+          '火车|huo3 che1|train;高铁|gao1 tie3|high-speed rail;电车|dian4 che1|tram;站台|zhan4 tai2|platform;' +
+          '飞机|fei1 ji1|airplane;直升机|zhi2 sheng1 ji1|helicopter;航班|hang2 ban1|flight;船|chuan2|boat / ship;渡轮|du4 lun2|ferry;游艇|you2 ting3|yacht;港口|gang3 kou3|port / harbor;' +
+          '马路|ma3 lu4|road;高速公路|gao1 su4 gong1 lu4|highway;桥|qiao2|bridge;红绿灯|hong2 lv4 deng1|traffic light;加油站|jia1 you2 zhan4|gas station;停车场|ting2 che1 chang3|parking lot;公共汽车站|gong1 gong4 qi4 che1 zhan4|bus stop;巴士路线|ba1 shi4 lu4 xian4|bus route;售票处|shou4 piao4 chu4|ticket office;打车|da3 che1|take a taxi;上车|shang4 che1|get on;下车|xia4 che1|get off'
+      },
+      {
+        id: 'shopping', icon: '🛍️', titleTrad: '購物消費', titleSimp: '购物消费', daily: true,
+        items:
+          '购物|gou4 wu4|shopping;买|mai3|to buy;卖|mai4|to sell;东西|dong1 xi5|thing / stuff;商品|shang1 pin3|goods / product;其他|qi2 ta1|other;一共|yi2 gong4|altogether;决定|jue2 ding4|to decide;' +
+          '商店|shang1 dian4|shop / store;超市|chao1 shi4|supermarket;市场|shi4 chang3|market;购物中心|gou4 wu4 zhong1 xin1|shopping mall;百货商店|bai3 huo4 shang1 dian4|department store;便利店|bian4 li4 dian4|convenience store;书店|shu1 dian4|bookstore;面包店|mian4 bao1 dian4|bakery;药店|yao4 dian4|pharmacy;服装店|fu2 zhuang1 dian4|clothing store;时装商店|shi2 zhuang1 shang1 dian4|fashion store;' +
+          '大厅|da4 ting1|hall / lobby;一层|yi4 ceng2|first floor;二层|er4 ceng2|second floor;三层|san1 ceng2|third floor;自动扶梯|zi4 dong4 fu2 ti1|escalator;电梯|dian4 ti1|elevator;更衣室|geng1 yi1 shi4|fitting room;购物指南|gou4 wu4 zhi3 nan2|store directory;招牌|zhao1 pai5|shop sign;卫生间|wei4 sheng1 jian1|bathroom / toilet;婴儿间|ying1 er2 jian1|baby changing room;儿童用品部|er2 tong2 yong4 pin3 bu4|children\'s dept.;箱包部|xiang1 bao1 bu4|luggage dept.;鞋靴部|xie2 xue1 bu4|shoe dept.;' +
+          '化妆品|hua4 zhuang1 pin3|cosmetics;玩具|wan2 ju4|toy;钱|qian2|money;价格|jia4 ge2|price;现金|xian4 jin1|cash;找零|zhao3 ling2|change;发票|fa1 piao4|receipt / invoice;打折|da3 zhe2|discount;特价|te4 jia4|special price;免税|mian3 shui4|tax-free;信用卡|xin4 yong4 ka3|credit card;付钱|fu4 qian2|to pay;退款|tui4 kuan3|refund;购物车|gou4 wu4 che1|shopping cart;购物袋|gou4 wu4 dai4|shopping bag;' +
+          '客户服务|ke4 hu4 fu2 wu4|customer service;网络购物|wang3 luo4 gou4 wu4|online shopping;送货上门|song4 huo4 shang4 men2|home delivery;顾客|gu4 ke4|customer;收银员|shou1 yin2 yuan2|cashier;出纳员|chu1 na4 yuan2|teller;' +
+          '贵|gui4|expensive;便宜|pian2 yi5|cheap;尺寸|chi3 cun4|size;质量|zhi4 liang4|quality;多少钱？|duo1 shao3 qian2|How much is it?;太贵了|tai4 gui4 le5|Too expensive!;逛街|guang4 jie1|window-shop'
+      },
+      {
+        id: 'bank', icon: '🏦', titleTrad: '銀行與外幣', titleSimp: '银行与外币',
+        items:
+          '银行|yin2 hang2|bank;柜台|gui4 tai2|counter;窗口|chuang1 kou3|service window;存折|cun2 zhe2|passbook;税|shui4|tax;金额|jin1 e2|amount of money;宣传页|xuan1 chuan2 ye4|brochure;客户|ke4 hu4|client;银行经理|yin2 hang2 jing1 li3|bank manager;' +
+          '账户|zhang4 hu4|account;账号|zhang4 hao4|account number;活期存款账户|huo2 qi1 cun2 kuan3 zhang4 hu4|checking account;储蓄账户|chu3 xu4 zhang4 hu4|savings account;银行卡|yin2 hang2 ka3|bank card;借记卡|jie4 ji4 ka3|debit card;密码|mi4 ma3|password / PIN;存款|cun2 kuan3|savings / deposit;储蓄|chu3 xu4|savings;' +
+          '货币|huo4 bi4|currency;纸币|zhi3 bi4|banknote;硬币|ying4 bi4|coin;存钱|cun2 qian2|to deposit;取钱|qu3 qian2|to withdraw;转账|zhuan3 zhang4|to transfer;银行转账|yin2 hang2 zhuan3 zhang4|bank transfer;直接存款|zhi2 jie1 cun2 kuan3|direct deposit;付款|fu4 kuan3|payment;兑换|dui4 huan4|exchange currency;汇率|hui4 lv4|exchange rate;利息|li4 xi1|interest;利率|li4 lv4|interest rate;汇款|hui4 kuan3|to remit;余额|yu2 e2|balance;手续费|shou3 xu4 fei4|service fee;签名|qian1 ming2|signature;' +
+          '贷款|dai4 kuan3|loan;抵押贷款|di3 ya1 dai4 kuan3|mortgage loan;透支|tou4 zhi1|overdraft;支票|zhi1 piao4|cheque;支票簿|zhi1 piao4 bu4|checkbook;旅行支票|lv3 xing2 zhi1 piao4|traveler\'s check;存款单|cun2 kuan3 dan1|deposit slip;取款单|qu3 kuan3 dan1|withdrawal slip;' +
+          '自动取款机|zi4 dong4 qu3 kuan3 ji1|ATM;提款机|ti2 kuan3 ji1|ATM (short);屏幕|ping2 mu4|screen;按键区|an4 jian4 qu1|keypad;插卡口|cha1 ka3 kou3|card slot;' +
+          '外币|wai4 bi4|foreign currency;外币兑换处|wai4 bi4 dui4 huan4 chu4|currency exchange;人民币|ren2 min2 bi4|RMB;美元|mei3 yuan2|US dollar;港币|gang3 bi4|HK dollar;欧元|ou1 yuan2|euro;英镑|ying1 bang4|British pound;日元|ri4 yuan2|Japanese yen'
+      },
+      {
+        id: 'fruits', icon: '🍓', titleTrad: '水果', titleSimp: '水果',
+        items:
+          '浆果|jiang1 guo3|berry;有核水果|you3 he2 shui3 guo3|stone fruit;柑橘类水果|gan1 ju2 lei4 shui3 guo3|citrus fruit;果篮|guo3 lan2|fruit basket;' +
+          '苹果|ping2 guo3|apple;梨|li2|pear;桃子|tao2 zi5|peach;油桃|you2 tao2|nectarine;李子|li3 zi5|plum;杏子|xing4 zi5|apricot;樱桃|ying1 tao2|cherry;柿子|shi4 zi5|persimmon;石榴|shi2 liu5|pomegranate;枣|zao3|date (jujube);葡萄|pu2 tao5|grape;' +
+          '橙子|cheng2 zi5|orange;橘子|ju2 zi5|mandarin;柠檬|ning2 meng2|lemon;青柠|qing1 ning2|lime;柚子|you4 zi5|pomelo;葡萄柚|pu2 tao2 you4|grapefruit;金橘|jin1 ju2|kumquat;' +
+          '草莓|cao3 mei2|strawberry;蓝莓|lan2 mei2|blueberry;树莓|shu4 mei2|raspberry;覆盆子|fu4 pen2 zi3|raspberry (alt.);黑莓|hei1 mei2|blackberry;蔓越莓|man4 yue4 mei2|cranberry;灯笼果|deng1 long2 guo3|cape gooseberry;醋栗|cu4 li4|gooseberry;黑醋栗|hei1 cu4 li4|blackcurrant;' +
+          '西瓜|xi1 gua1|watermelon;哈密瓜|ha1 mi4 gua1|cantaloupe;甜瓜|tian2 gua1|muskmelon;蜜瓜|mi4 gua1|honeydew melon;' +
+          '香蕉|xiang1 jiao1|banana;菠萝|bo1 luo2|pineapple;芒果|mang2 guo3|mango;木瓜|mu4 gua1|papaya;椰子|ye1 zi5|coconut;猕猴桃|mi2 hou2 tao2|kiwi;火龙果|huo3 long2 guo3|dragon fruit;荔枝|li4 zhi1|lychee;龙眼|long2 yan3|longan;榴莲|liu2 lian2|durian;百香果|bai3 xiang1 guo3|passion fruit;番石榴|fan1 shi2 liu5|guava;杨桃|yang2 tao2|star fruit;鳄梨|e4 li2|avocado;' +
+          '外皮|wai4 pi2|skin / rind;果肉|guo3 rou4|flesh / pulp;瓜瓤|gua1 rang2|melon flesh;瓜籽|gua1 zi3|melon seed;新鲜|xin1 xian1|fresh;多汁|duo1 zhi1|juicy;无核|wu2 he2|seedless'
+      },
+      {
+        id: 'vegetables', icon: '🥦', titleTrad: '蔬菜', titleSimp: '蔬菜',
+        items:
+          '大白菜|da4 bai2 cai4|napa cabbage;小白菜|xiao3 bai2 cai4|bok choy;油菜|you2 cai4|choy sum;菠菜|bo1 cai4|spinach;生菜|sheng1 cai4|lettuce;莴苣|wo1 ju4|lettuce (alt.);豆瓣菜|dou4 ban4 cai4|watercress;芝麻菜|zhi1 ma5 cai4|arugula;蒲公英|pu2 gong1 ying1|dandelion greens;韭菜|jiu3 cai4|chives;芹菜|qin2 cai4|celery;' +
+          '卷心菜|juan3 xin1 cai4|cabbage;羽衣甘蓝|yu3 yi1 gan1 lan2|kale;抱子甘蓝|bao4 zi3 gan1 lan2|brussels sprouts;球茎甘蓝|qiu2 jing1 gan1 lan2|kohlrabi;西兰花|xi1 lan2 hua1|broccoli;菜花|cai4 hua1|cauliflower;花椰菜|hua1 ye1 cai4|cauliflower (alt.);芜菁|wu2 jing1|turnip;' +
+          '胡萝卜|hu2 luo2 bo5|carrot;白萝卜|bai2 luo2 bo5|daikon radish;土豆|tu3 dou4|potato;马铃薯|ma3 ling2 shu3|potato (formal);红薯|hong2 shu3|sweet potato;芋头|yu4 tou5|taro;木薯|mu4 shu3|cassava;山药|shan1 yao5|Chinese yam;莲藕|lian2 ou3|lotus root;甜菜|tian2 cai4|beetroot;荸荠|bi2 qi2|water chestnut;块根芹|kuai4 gen1 qin2|celeriac;姜|jiang1|ginger;' +
+          '西红柿|xi1 hong2 shi4|tomato;樱桃番茄|ying1 tao2 fan1 qie2|cherry tomato;茄子|qie2 zi5|eggplant;黄瓜|huang2 gua1|cucumber;青椒|qing1 jiao1|bell pepper;辣椒|la4 jiao1|chili pepper;苦瓜|ku3 gua1|bitter melon;玉米|yu4 mi3|corn;羊角豆|yang2 jiao3 dou4|okra;' +
+          '南瓜|nan2 gua1|pumpkin;西葫芦|xi1 hu2 lu5|zucchini;冬南瓜|dong1 nan2 gua1|butternut squash;洋葱|yang2 cong1|onion;葱|cong1|scallion;韭葱|jiu3 cong1|leek;大蒜|da4 suan4|garlic;' +
+          '四季豆|si4 ji4 dou4|green beans;蚕豆|can2 dou4|broad bean;豌豆|wan1 dou4|pea;黄豆|huang2 dou4|soybean;豆芽|dou4 ya2|bean sprout;蘑菇|mo2 gu5|mushroom;香菇|xiang1 gu1|shiitake;块菌|kuai4 jun1|truffle;' +
+          '竹笋|zhu2 sun3|bamboo shoot;芦笋|lu2 sun3|asparagus;朝鲜蓟|chao2 xian3 ji4|artichoke;茴香|hui2 xiang1|fennel;豆腐|dou4 fu5|tofu;蒜瓣儿|suan4 ban4 er5|garlic clove;种子|zhong3 zi5|seed;塑料袋|su4 liao4 dai4|plastic bag'
+      },
+      {
+        id: 'illnesses', icon: '🩺', titleTrad: '疾病與看病', titleSimp: '疾病与看病',
+        items:
+          '生病|sheng1 bing4|to be sick;症状|zheng4 zhuang4|symptom;病毒|bing4 du2|virus;传染|chuan2 ran3|contagious;感染|gan3 ran3|infection;' +
+          '感冒|gan3 mao4|cold (illness);发烧|fa1 shao1|fever;咳嗽|ke2 sou5|cough;打喷嚏|da3 pen1 ti4|to sneeze;喷嚏|pen1 ti4|sneeze;流鼻涕|liu2 bi2 ti4|runny nose;鼻血|bi2 xie3|nosebleed;' +
+          '头疼|tou2 teng2|headache;头痛|tou2 tong4|headache (formal);偏头痛|pian1 tou2 tong4|migraine;肚子疼|du4 zi5 teng2|stomachache;胃痛|wei4 tong4|stomach pain;嗓子疼|sang3 zi5 teng2|sore throat;牙疼|ya2 teng2|toothache;' +
+          '拉肚子|la1 du4 zi5|diarrhea;腹泻|fu4 xie4|diarrhea (formal);呕吐|ou3 tu4|to vomit;恶心|e3 xin1|nausea;头晕|tou2 yun1|dizzy;昏厥|hun1 jue2|to faint;寒战|han2 zhan4|chills;痉挛|jing4 luan2|spasm / cramp;疲劳|pi2 lao2|fatigue;过敏|guo4 min3|allergy;枯草热|ku1 cao3 re4|hay fever;皮疹|pi2 zhen3|rash;湿疹|shi1 zhen3|eczema;' +
+          '流感|liu2 gan3|flu;水痘|shui3 dou4|chickenpox;麻疹|ma2 zhen3|measles;腮腺炎|sai1 xian4 yan2|mumps;肺炎|fei4 yan2|pneumonia;新冠|xin1 guan1|COVID-19;' +
+          '癌症|ai2 zheng4|cancer;糖尿病|tang2 niao4 bing4|diabetes;血压|xue4 ya1|blood pressure;高血压|gao1 xue4 ya1|high blood pressure;心脏病|xin1 zang4 bing4|heart disease;心肌梗塞|xin1 ji1 geng3 se4|heart attack;中风|zhong4 feng1|stroke;哮喘|xiao4 chuan3|asthma;癫痫|dian1 xian2|epilepsy;' +
+          '医院|yi1 yuan4|hospital;诊所|zhen3 suo3|clinic;药|yao4|medicine;打针|da3 zhen1|injection;处方|chu3 fang1|prescription;看病|kan4 bing4|see a doctor;吃药|chi1 yao4|take medicine;康复|kang1 fu4|recover;体温|ti3 wen1|body temperature'
+      },
+      {
+        id: 'house', icon: '🏠', titleTrad: '家居與房間', titleSimp: '家居与房间',
+        items:
+          '房子|fang2 zi5|house;房屋|fang2 wu1|house (formal);公寓|gong1 yu4|apartment;大楼|da4 lou2|building;楼层|lou2 ceng2|floor / storey;地下室|di4 xia4 shi4|basement;阁楼|ge2 lou2|attic / loft;房间|fang2 jian1|room;窗户|chuang1 hu5|window;墙壁|qiang2 bi4|wall;天花板|tian1 hua1 ban3|ceiling;地板|di4 ban3|floor;屋顶|wu1 ding3|roof;楼梯|lou2 ti1|stairs;栏杆|lan2 gan1|banister;扶手|fu2 shou3|handrail;花园|hua1 yuan2|garden;庭院|ting2 yuan4|courtyard;车库|che1 ku4|garage;钥匙|yao4 shi5|key;' +
+          '独立式|du2 li4 shi4|detached house;平房|ping2 fang2|bungalow;公寓楼|gong1 yu4 lou2|apartment building;房客|fang2 ke4|tenant;房东|fang2 dong1|landlord;房租|fang2 zu1|rent;租用|zu1 yong4|to rent;' +
+          '前门|qian2 men2|front door;门厅|men2 ting1|entrance hall;门廊|men2 lang2|porch;门廊灯|men2 lang2 deng1|porch light;门垫|men2 dian4|doormat;门铃|men2 ling2|doorbell;对讲器|dui4 jiang3 qi4|intercom;防盗警报|fang2 dao4 jing3 bao4|burglar alarm;信箱|xin4 xiang1|mailbox;屋檐|wu1 yan2|eaves;烟囱|yan1 cong1|chimney;瓦片|wa3 pian4|roof tile;百叶窗|bai3 ye4 chuang1|shutter / blind;阳台|yang2 tai2|balcony;' +
+          '客厅|ke4 ting1|living room;卧室|wo4 shi4|bedroom;厨房|chu2 fang2|kitchen;浴室|yu4 shi4|bathroom;洗手间|xi3 shou3 jian1|washroom;厕所|ce4 suo3|toilet;餐厅|can1 ting1|dining room;书房|shu1 fang2|study;' +
+          '家具|jia1 ju4|furniture;沙发|sha1 fa1|sofa;桌子|zhuo1 zi5|table;茶几|cha2 ji1|coffee table;书桌|shu1 zhuo1|desk;椅子|yi3 zi5|chair;书架|shu1 jia4|bookshelf;橱柜|chu2 gui4|cupboard;枕头|zhen3 tou5|pillow;被子|bei4 zi5|quilt;衣柜|yi1 gui4|wardrobe;抽屉|chou1 ti5|drawer;镜子|jing4 zi5|mirror;地毯|di4 tan3|carpet;窗帘|chuang1 lian2|curtain;台灯|tai2 deng1|desk lamp;灯开关|deng1 kai1 guan1|light switch;电源插座|dian4 yuan2 cha1 zuo4|power socket;盆栽|pen2 zai1|potted plant;水龙头|shui3 long2 tou2|faucet;' +
+          '水槽|shui3 cao2|sink;盘子|pan2 zi5|plate;筷子|kuai4 zi5|chopsticks;勺子|shao2 zi5|spoon;杯子|bei1 zi5|cup;马桶|ma3 tong3|toilet (fixture);淋浴|lin2 yu4|shower;浴缸|yu4 gang1|bathtub;毛巾|mao2 jin1|towel;牙刷|ya2 shua1|toothbrush;牙膏|ya2 gao1|toothpaste;肥皂|fei2 zao4|soap;洗发水|xi3 fa4 shui3|shampoo'
+      },
+      {
+        id: 'appliances', icon: '📺', titleTrad: '電器與電子', titleSimp: '电器与电子',
+        items:
+          '电器|dian4 qi4|appliances;冰箱|bing1 xiang1|refrigerator;炉子|lu2 zi5|stove;烤箱|kao3 xiang1|oven;微波炉|wei1 bo1 lu2|microwave;烤面包机|kao3 mian4 bao1 ji1|toaster;水壶|shui3 hu2|kettle;' +
+          '空调|kong1 tiao2|air conditioner;电风扇|dian4 feng1 shan4|electric fan;扇叶|shan4 ye4|fan blade;暖气片|nuan3 qi4 pian4|radiator;电暖器|dian4 nuan3 qi4|space heater;热水器|re4 shui3 qi4|water heater;洗衣机|xi3 yi1 ji1|washing machine;吸尘器|xi1 chen2 qi4|vacuum cleaner;' +
+          '家庭娱乐|jia1 ting2 yu2 le4|home entertainment;电视|dian4 shi4|television;平板电视|ping2 ban3 dian4 shi4|flatscreen TV;显示屏|xian3 shi4 ping2|display screen;高清晰度|gao1 qing1 xi1 du4|high definition;电视机顶盒|dian4 shi4 ji1 ding3 he2|set-top box;有线电视|you3 xian4 dian4 shi4|cable TV;流媒体|liu2 mei2 ti3|streaming media;无线网络|wu2 xian4 wang3 luo4|wireless network;节目|jie2 mu4|program;故事片|gu4 shi5 pian4|feature film;广告|guang3 gao4|advertisement;收费频道|shou1 fei4 pin2 dao4|pay-per-view;' +
+          '收音机|shou1 yin1 ji1|radio;数码收音机|shu4 ma3 shou1 yin1 ji1|digital radio;立体声|li4 ti3 sheng1|stereo sound;功率放大器|gong1 lv4 fang4 da4 qi4|amplifier;音箱|yin1 xiang1|speaker;耳机|er3 ji1|headphones;音量|yin1 liang4|volume;遥控器|yao2 kong4 qi4|remote control;音乐播放器|yin1 yue4 bo1 fang4 qi4|music player;电唱机|dian4 chang4 ji1|record player;CD 播放机|CD bo1 fang4 ji1|CD player;DVD 光盘|DVD guang1 pan2|DVD disc;视频游戏|shi4 pin2 you2 xi4|video game;操纵手柄|cao1 zong4 shou3 bing3|game controller;控制台|kong4 zhi4 tai2|console;' +
+          '播放|bo1 fang4|to play;暂停|zan4 ting2|to pause;停止|ting2 zhi3|to stop;倒带|dao4 dai4|to rewind;快进|kuai4 jin4|fast-forward;录制|lu4 zhi4|to record;换频道|huan4 pin2 dao4|change channel;调收音机|tiao2 shou1 yin1 ji1|tune radio;看电视|kan4 dian4 shi4|watch TV;开电视|kai1 dian4 shi4|turn on TV;关电视|guan1 dian4 shi4|turn off TV'
+      },
+      {
+        id: 'animals', icon: '🐼', titleTrad: '動物世界', titleSimp: '动物世界',
+        items:
+          '动物|dong4 wu4|animal;哺乳动物|bu3 ru3 dong4 wu4|mammal;爬行动物|pa2 xing2 dong4 wu4|reptile;两栖动物|liang3 qi1 dong4 wu4|amphibian;无脊椎动物|wu2 ji3 zhui1 dong4 wu4|invertebrate;昆虫|kun1 chong2|insect;鸟|niao3|bird;' +
+          '狗|gou3|dog;小狗|xiao3 gou3|puppy;猫|mao1|cat;小猫|xiao3 mao1|kitten;兔子|tu4 zi5|rabbit;仓鼠|cang1 shu3|hamster;金鱼|jin1 yu2|goldfish;金丝雀|jin1 si1 que4|canary;' +
+          '猪|zhu1|pig;牛|niu2|cow / ox;羊|yang2|sheep;山羊|shan1 yang2|goat;马|ma3|horse;驴|lv2|donkey;鸭子|ya1 zi5|duck;鹅|e2|goose;火鸡|huo3 ji1|turkey;' +
+          '老虎|lao3 hu3|tiger;狮子|shi1 zi5|lion;大象|da4 xiang4|elephant;北极熊|bei3 ji2 xiong2|polar bear;熊猫|xiong2 mao1|panda;树袋熊|shu4 dai4 xiong2|koala;大猩猩|da4 xing1 xing5|gorilla;猴子|hou2 zi5|monkey;狼|lang2|wolf;狐狸|hu2 li5|fox;鹿|lu4|deer;长颈鹿|chang2 jing3 lu4|giraffe;斑马|ban1 ma3|zebra;袋鼠|dai4 shu3|kangaroo;犀牛|xi1 niu2|rhinoceros;河马|he2 ma3|hippopotamus;松鼠|song1 shu3|squirrel;刺猬|ci4 wei5|hedgehog;浣熊|huan4 xiong2|raccoon;水獭|shui3 ta3|otter;蝙蝠|bian1 fu2|bat;老鼠|lao3 shu3|rat;' +
+          '麻雀|ma2 que4|sparrow;鹰|ying1|eagle;猫头鹰|mao1 tou2 ying1|owl;鸽子|ge1 zi5|pigeon;天鹅|tian1 e2|swan;企鹅|qi3 e2|penguin;鹦鹉|ying1 wu3|parrot;乌鸦|wu1 ya1|crow;孔雀|kong3 que4|peacock;燕子|yan4 zi5|swallow;啄木鸟|zhuo2 mu4 niao3|woodpecker;蜂鸟|feng1 niao3|hummingbird;火烈鸟|huo3 lie4 niao3|flamingo;海鸥|hai3 ou1|seagull;' +
+          '鲨鱼|sha1 yu2|shark;鲸鱼|jing1 yu2|whale;剑鱼|jian4 yu2|swordfish;海豚|hai3 tun2|dolphin;海豹|hai3 bao4|seal;海狮|hai3 shi1|sea lion;海象|hai3 xiang4|walrus;海马|hai3 ma3|seahorse;章鱼|zhang1 yu2|octopus;水母|shui3 mu3|jellyfish;海星|hai3 xing1|starfish;螃蟹|pang2 xie4|crab;虾|xia1|shrimp;海龟|hai3 gui1|sea turtle;乌龟|wu1 gui1|turtle;' +
+          '蝴蝶|hu2 die2|butterfly;毛虫|mao2 chong2|caterpillar;蜜蜂|mi4 feng1|honeybee;蚂蚁|ma3 yi3|ant;白蚁|bai2 yi3|termite;蚊子|wen2 zi5|mosquito;苍蝇|cang1 ying5|housefly;蜻蜓|qing1 ting2|dragonfly;蚱蜢|zha4 meng3|grasshopper;蟋蟀|xi1 shuai4|cricket;螳螂|tang2 lang2|mantis;蟑螂|zhang1 lang2|cockroach;瓢虫|piao2 chong2|ladybug;' +
+          '蜘蛛|zhi1 zhu1|spider;蝎子|xie1 zi5|scorpion;蜈蚣|wu2 gong1|centipede;蜗牛|wo1 niu2|snail;蚯蚓|qiu1 yin3|earthworm;蛇|she2|snake;蜥蜴|xi1 yi4|lizard;鳄鱼|e4 yu2|crocodile;短吻鳄|duan3 wen3 e4|alligator;青蛙|qing1 wa1|frog;蟾蜍|chan2 chu2|toad;蝌蚪|ke1 dou3|tadpole;羽毛|yu3 mao2|feather;翅膀|chi4 bang3|wing;触角|chu4 jiao3|antenna;育儿袋|yu4 er2 dai4|pouch'
+      },
+      {
+        id: 'world', icon: '🌍', titleTrad: '世界地理', titleSimp: '世界地理',
+        items:
+          '世界|shi4 jie4|world;地球|di4 qiu2|earth / globe;地图|di4 tu2|map;世界地图|shi4 jie4 di4 tu2|world map;大洲|da4 zhou1|continent;海洋|hai3 yang2|ocean;国家|guo2 jia1|country;首都|shou3 du1|capital city;边界|bian1 jie4|border;国籍|guo2 ji2|nationality;国旗|guo2 qi2|national flag;赤道|chi4 dao4|equator;半球|ban4 qiu2|hemisphere;纬度|wei3 du4|latitude;经度|jing1 du4|longitude;北极|bei3 ji2|North Pole;南极|nan2 ji2|South Pole;' +
+          '亚洲|ya4 zhou1|Asia;欧洲|ou1 zhou1|Europe;非洲|fei1 zhou1|Africa;北美洲|bei3 mei3 zhou1|North America;南美洲|nan2 mei3 zhou1|South America;大洋洲|da4 yang2 zhou1|Oceania;南极洲|nan2 ji2 zhou1|Antarctica;' +
+          '太平洋|tai4 ping2 yang2|Pacific Ocean;大西洋|da4 xi1 yang2|Atlantic Ocean;印度洋|yin4 du4 yang2|Indian Ocean;北冰洋|bei3 bing1 yang2|Arctic Ocean;南冰洋|nan2 bing1 yang2|Southern Ocean;' +
+          '中国|zhong1 guo2|China;北京|bei3 jing1|Beijing;澳门|ao4 men2|Macau;台湾|tai2 wan1|Taiwan;台北|tai2 bei3|Taipei;日本|ri4 ben3|Japan;东京|dong1 jing1|Tokyo;韩国|han2 guo2|South Korea;首尔|shou3 er3|Seoul;朝鲜|chao2 xian3|North Korea;印度|yin4 du4|India;新德里|xin1 de2 li3|New Delhi;泰国|tai4 guo2|Thailand;曼谷|man4 gu3|Bangkok;越南|yue4 nan2|Vietnam;河内|he2 nei4|Hanoi;新加坡|xin1 jia1 po1|Singapore;马来西亚|ma3 lai2 xi1 ya4|Malaysia;吉隆坡|ji2 long2 po1|Kuala Lumpur;印度尼西亚|yin4 du4 ni2 xi1 ya4|Indonesia;雅加达|ya3 jia1 da2|Jakarta;菲律宾|fei1 lv4 bin1|Philippines;马尼拉|ma3 ni2 la1|Manila;沙特阿拉伯|sha1 te4 a1 la1 bo2|Saudi Arabia;以色列|yi3 se4 lie4|Israel;耶路撒冷|ye1 lu4 sa1 leng3|Jerusalem;' +
+          '英国|ying1 guo2|United Kingdom;伦敦|lun2 dun1|London;法国|fa3 guo2|France;巴黎|ba1 li2|Paris;德国|de2 guo2|Germany;柏林|bo2 lin2|Berlin;意大利|yi4 da4 li4|Italy;罗马|luo2 ma3|Rome;西班牙|xi1 ban1 ya2|Spain;马德里|ma3 de2 li3|Madrid;葡萄牙|pu2 tao2 ya2|Portugal;里斯本|li3 si1 ben3|Lisbon;荷兰|he2 lan2|Netherlands;阿姆斯特丹|a1 mu3 si1 te4 dan1|Amsterdam;瑞士|rui4 shi4|Switzerland;瑞典|rui4 dian3|Sweden;希腊|xi1 la4|Greece;雅典|ya3 dian3|Athens;爱尔兰|ai4 er3 lan2|Ireland;都柏林|du1 bo2 lin2|Dublin;俄罗斯|e2 luo2 si1|Russia;莫斯科|mo4 si1 ke1|Moscow;' +
+          '美国|mei3 guo2|United States;华盛顿|hua2 sheng4 dun4|Washington, D.C.;加拿大|jia1 na2 da4|Canada;渥太华|wo4 tai4 hua2|Ottawa;墨西哥|mo4 xi1 ge1|Mexico;巴西|ba1 xi1|Brazil;阿根廷|a1 gen1 ting2|Argentina;智利|zhi4 li4|Chile;秘鲁|bi4 lu3|Peru;古巴|gu3 ba1|Cuba;' +
+          '埃及|ai1 ji2|Egypt;开罗|kai1 luo2|Cairo;南非|nan2 fei1|South Africa;开普敦|kai1 pu3 dun1|Cape Town;尼日利亚|ni2 ri4 li4 ya4|Nigeria;肯尼亚|ken3 ni2 ya4|Kenya;摩洛哥|mo2 luo4 ge1|Morocco;澳大利亚|ao4 da4 li4 ya4|Australia;堪培拉|kan1 pei2 la1|Canberra;新西兰|xin1 xi1 lan2|New Zealand;惠灵顿|hui4 ling2 dun4|Wellington;斐济|fei3 ji4|Fiji;' +
+          '中国人|zhong1 guo2 ren2|Chinese person;中文|zhong1 wen2|Chinese (language);汉语|han4 yu3|Mandarin / Chinese;美国人|mei3 guo2 ren2|American;英语|ying1 yu3|English;法语|fa3 yu3|French;日语|ri4 yu3|Japanese'
+      },
+      {
+        id: 'clothing', icon: '👕', titleTrad: '服裝與鞋帽', titleSimp: '服装与鞋帽',
+        items:
+          '衣服|yi1 fu5|clothes;服装|fu2 zhuang1|apparel;套装|tao4 zhuang1|outfit / suit;时尚|shi2 shang4|fashion;尺码|chi3 ma3|size;男装|nan2 zhuang1|men\'s clothing;女装|nv3 zhuang1|women\'s clothing;童装|tong2 zhuang1|children\'s clothing;制服|zhi4 fu2|uniform;' +
+          '上衣|shang4 yi1|top;衬衫|chen4 shan1|shirt;T恤|T xu4|T-shirt;马球衫|ma3 qiu2 shan1|polo shirt;毛衣|mao2 yi1|sweater;卫衣|wei4 yi1|hoodie / sweatshirt;开衫|kai1 shan1|cardigan;背心|bei4 xin1|vest;' +
+          '裤子|ku4 zi5|trousers;牛仔裤|niu2 zai3 ku4|jeans;西裤|xi1 ku4|suit trousers;短裤|duan3 ku4|shorts;打底裤|da3 di3 ku4|leggings;裙子|qun2 zi5|skirt;连衣裙|lian2 yi1 qun2|dress;' +
+          '大衣|da4 yi1|overcoat;夹克|jia1 ke4|jacket;羽绒服|yu3 rong2 fu2|down jacket;风衣|feng1 yi1|windbreaker;西装|xi1 zhuang1|western suit;西装外套|xi1 zhuang1 wai4 tao4|blazer;' +
+          '内衣|nei4 yi1|underwear;内裤|nei4 ku4|underpants;袜子|wa4 zi5|socks;丝袜|si1 wa4|stockings;睡衣|shui4 yi1|pajamas;浴袍|yu4 pao2|bathrobe;泳衣|yong3 yi1|swimsuit;泳裤|yong3 ku4|swim trunks;' +
+          '鞋子|xie2 zi5|shoes;皮鞋|pi2 xie2|leather shoes;运动鞋|yun4 dong4 xie2|sneakers;帆布鞋|fan1 bu4 xie2|canvas shoes;凉鞋|liang2 xie2|sandals;拖鞋|tuo1 xie2|slippers;人字拖|ren2 zi4 tuo1|flip-flops;高跟鞋|gao1 gen1 xie2|high heels;鞋带|xie2 dai4|shoelace;鞋底|xie2 di3|sole;' +
+          '帽子|mao4 zi5|hat / cap;围巾|wei2 jin1|scarf;手套|shou3 tao4|gloves;皮带|pi2 dai4|belt;领带|ling3 dai4|necktie;领结|ling3 jie2|bow tie;眼镜|yan3 jing4|glasses;墨镜|mo4 jing4|sunglasses;手提包|shou3 ti2 bao1|handbag;背包|bei1 bao1|backpack;钱包|qian2 bao1|wallet;首饰|shou3 shi4|jewelry;戒指|jie4 zhi5|ring;项链|xiang4 lian4|necklace;耳环|er3 huan2|earrings;' +
+          '棉布|mian2 bu4|cotton;羊毛|yang2 mao2|wool;丝绸|si1 chou2|silk;亚麻|ya4 ma2|linen;皮革|pi2 ge2|leather;牛仔布|niu2 zai3 bu4|denim;涤纶|di2 lun2|polyester;尼龙|ni2 long2|nylon;蕾丝|lei3 si1|lace;天鹅绒|tian1 e2 rong2|velvet;' +
+          '领子|ling3 zi5|collar;袖子|xiu4 zi5|sleeve;袖口|xiu4 kou3|cuff;口袋|kou3 dai4|pocket;纽扣|niu3 kou4|button;拉链|la1 lian4|zipper;合适|he2 shi4|to fit;宽松|kuan1 song1|loose;条纹|tiao2 wen2|striped;格子|ge2 zi5|plaid;试穿|shi4 chuan1|try on;换衣服|huan4 yi1 fu5|change clothes'
+      },
+      {
+        id: 'idioms', icon: '📜', titleTrad: '成語與諺語', titleSimp: '成语与谚语',
+        items:
+          '熟能生巧|shu2 neng2 sheng1 qiao3|practice makes perfect;温故知新|wen1 gu4 zhi1 xin1|review old, learn new;持之以恒|chi2 zhi1 yi3 heng2|persevere constantly;锲而不舍|qie4 er2 bu4 she3|dogged persistence;全力以赴|quan2 li4 yi3 fu4|go all out;废寝忘食|fei4 qin3 wang4 shi2|absorbed in work/study;日积月累|ri4 ji1 yue4 lei3|accumulate over time;半途而废|ban4 tu2 er2 fei4|quit halfway;' +
+          '三思而行|san1 si1 er2 xing2|think thrice before acting;未雨绸缪|wei4 yu3 chou2 mou2|prepare before it rains;有备无患|you3 bei4 wu2 huan4|preparation prevents trouble;量力而行|liang4 li4 er2 xing2|act within one\'s means;对症下药|dui4 zheng4 xia4 yao4|tailor the remedy;事半功倍|shi4 ban4 gong1 bei4|half work, double result;事倍功半|shi4 bei4 gong1 ban4|double work, half result;一举两得|yi1 ju3 liang3 de2|kill two birds with one stone;' +
+          '画蛇添足|hua4 she2 tian1 zu2|ruin by overdoing it;画龙点睛|hua4 long2 dian3 jing1|the finishing touch;守株待兔|shou3 zhu1 dai4 tu4|rely on dumb luck;刻舟求剑|ke4 zhou1 qiu2 jian4|rigid thinking;掩耳盗铃|yan3 er3 dao4 ling2|fool only oneself;亡羊补牢|wang2 yang2 bu3 lao2|better late than never;拔苗助长|ba2 miao2 zhu4 zhang3|spoil by rushing;自相矛盾|zi4 xiang1 mao2 dun4|contradict oneself;井底之蛙|jing3 di3 zhi1 wa1|narrow outlook;班门弄斧|ban1 men2 nong4 fu3|show off before an expert;滥竽充数|lan4 yu2 chong1 shu4|pass oneself off;南辕北辙|nan2 yuan2 bei3 zhe2|opposite to the goal;纸上谈兵|zhi3 shang4 tan2 bing1|armchair theorizing;塞翁失马|sai4 weng1 shi1 ma3|blessing in disguise;' +
+          '因祸得福|yin1 huo4 de2 fu2|blessing from misfortune;一帆风顺|yi1 fan1 feng1 shun4|smooth sailing;否极泰来|pi3 ji2 tai4 lai2|good follows the worst;一波三折|yi1 bo1 san1 zhe2|full of twists;时过境迁|shi2 guo4 jing4 qian1|times have changed;一日千里|yi1 ri4 qian1 li3|rapid progress;' +
+          '实事求是|shi2 shi4 qiu2 shi4|seek truth from facts;脚踏实地|jiao3 ta4 shi2 di4|down-to-earth;名副其实|ming2 fu4 qi2 shi2|live up to reputation;平易近人|ping2 yi4 jin4 ren2|approachable;见多识广|jian4 duo1 shi2 guang3|experienced & worldly;一心一意|yi1 xin1 yi1 yi4|wholeheartedly;三心二意|san1 xin1 er4 yi4|half-hearted;心不在焉|xin1 bu4 zai4 yan1|absent-minded;自以为是|zi4 yi3 wei2 shi4|self-righteous;口是心非|kou3 shi4 xin1 fei1|insincere;' +
+          '兴高采烈|xing4 gao1 cai3 lie4|in high spirits;心花怒放|xin1 hua1 nu4 fang4|overjoyed;喜出望外|xi3 chu1 wang4 wai4|pleasantly surprised;提心吊胆|ti2 xin1 diao4 dan3|filled with dread;垂头丧气|chui2 tou2 sang4 qi4|dejected;目瞪口呆|mu4 deng4 kou3 dai1|stunned speechless;大惊小怪|da4 jing1 xiao3 guai4|fuss over nothing;迫不及待|po4 bu4 ji2 dai4|can\'t wait;' +
+          '一见如故|yi1 jian4 ru2 gu4|instant rapport;情同手足|qing2 tong2 shou3 zu2|close as brothers;同甘共苦|tong2 gan1 gong4 ku3|through thick and thin;齐心协力|qi2 xin1 xie2 li4|pull together as one;入乡随俗|ru4 xiang1 sui2 su2|when in Rome;雪中送炭|xue3 zhong1 song4 tan4|timely help in need;锦上添花|jin3 shang4 tian1 hua1|icing on the cake;将心比心|jiang1 xin1 bi3 xin1|put yourself in their shoes;' +
+          '开门见山|kai1 men2 jian4 shan1|straight to the point;一针见血|yi1 zhen1 jian4 xie3|hit the nail on the head;滔滔不绝|tao1 tao1 bu4 jue2|talk non-stop;众所周知|zhong4 suo3 zhou1 zhi1|known to all;独一无二|du2 yi1 wu2 er4|one of a kind;举世闻名|ju3 shi4 wen2 ming2|world-famous;人山人海|ren2 shan1 ren2 hai3|huge crowd;层出不穷|ceng2 chu1 bu4 qiong2|emerging endlessly;' +
+          '风和日丽|feng1 he2 ri4 li4|fine mild day;春暖花开|chun1 nuan3 hua1 kai1|springtime;鸟语花香|niao3 yu3 hua1 xiang1|idyllic spring;山清水秀|shan1 qing1 shui3 xiu4|scenic countryside;秋高气爽|qiu1 gao1 qi4 shuang3|crisp autumn weather;冰天雪地|bing1 tian1 xue3 di4|frozen world;电闪雷鸣|dian4 shan3 lei2 ming2|violent storm;世外桃源|shi4 wai4 tao2 yuan2|Shangri-La;' +
+          '光阴似箭|guang1 yin1 si4 jian4|time flies;转眼之间|zhuan3 yan3 zhi1 jian1|in an instant;日新月异|ri4 xin1 yue4 yi4|changing rapidly;与时俱进|yu3 shi2 ju4 jin4|keep up with the times;争分夺秒|zheng1 fen1 duo2 miao3|race against the clock;循序渐进|xun2 xu4 jian4 jin4|step by step;举一反三|ju3 yi1 fan3 san1|generalize from one;融会贯通|rong2 hui4 guan4 tong1|integrate thoroughly;学以致用|xue2 yi3 zhi4 yong4|apply what you learn;青出于蓝|qing1 chu1 yu2 lan2|student surpasses teacher;' +
+          '井井有条|jing3 jing3 you3 tiao2|in perfect order;精打细算|jing1 da3 xi4 suan4|budget carefully;得心应手|de2 xin1 ying4 shou3|effortless mastery;手忙脚乱|shou3 mang2 jiao3 luan4|frantic scramble;拐弯抹角|guai3 wan1 mo4 jiao3|beat around the bush;实话实说|shi2 hua4 shi2 shuo1|tell it straight;自言自语|zi4 yan2 zi4 yu3|mutter to oneself;七嘴八舌|qi1 zui3 ba1 she2|all talking at once;表里如一|biao3 li3 ru2 yi1|genuine inside and out;助人为乐|zhu4 ren2 wei2 le4|glad to help;' +
+          '进退两难|jin4 tui4 liang3 nan2|caught in a dilemma;骑虎难下|qi2 hu3 nan2 xia4|too committed to back out;山穷水尽|shan1 qiong2 shui3 jin4|end of resources;柳暗花明|liu3 an4 hua1 ming2|light at end of tunnel;雪上加霜|xue3 shang4 jia1 shuang1|make worse;火上浇油|huo3 shang4 jiao1 you2|add fuel to fire;化险为夷|hua4 xian3 wei2 yi2|defuse a crisis;微不足道|wei1 bu4 zu2 dao4|negligible;举足轻重|ju3 zu2 qing1 zhong4|decisive importance;千方百计|qian1 fang1 bai3 ji4|by every means;一模一样|yi1 mu2 yi1 yang4|identical;大同小异|da4 tong2 xiao3 yi4|much the same;半斤八两|ban4 jin1 ba1 liang3|six of one, half a dozen;物美价廉|wu4 mei3 jia4 lian2|great value;' +
+          '生龙活虎|sheng1 long2 huo2 hu3|bursting with energy;马到成功|ma3 dao4 cheng2 gong1|instant success;虎头蛇尾|hu3 tou2 she2 wei3|strong start, weak finish;对牛弹琴|dui4 niu2 tan2 qin2|wrong audience;如鱼得水|ru2 yu2 de2 shui3|in one\'s element;九牛一毛|jiu3 niu2 yi1 mao2|drop in the bucket;眼高手低|yan3 gao1 shou3 di1|high standards, weak skill;心灵手巧|xin1 ling2 shou3 qiao3|clever and dexterous;面红耳赤|mian4 hong2 er3 chi4|flushed red;五花八门|wu3 hua1 ba1 men2|every imaginable kind;七上八下|qi1 shang4 ba1 xia4|anxious;十全十美|shi2 quan2 shi2 mei3|flawless;百发百中|bai3 fa1 bai3 zhong4|never misses;万无一失|wan4 wu2 yi1 shi1|foolproof;家常便饭|jia1 chang2 bian4 fan4|everyday occurrence;津津有味|jin1 jin1 you3 wei4|with great relish;苦尽甘来|ku3 jin4 gan1 lai2|sweetness after bitterness;' +
+          '活到老，学到老|huo2 dao4 lao3, xue2 dao4 lao3|Never too old to learn;万事开头难|wan4 shi4 kai1 tou2 nan2|The beginning is the hardest;失败是成功之母|shi1 bai4 shi4 cheng2 gong1 zhi1 mu3|Failure is the mother of success;有志者事竟成|you3 zhi4 zhe3 shi4 jing4 cheng2|Where there\'s a will, there\'s a way;欲速则不达|yu4 su4 ze2 bu4 da2|Haste makes waste;三人行，必有我师|san1 ren2 xing2, bi4 you3 wo3 shi1|Among any three, one can teach me;人不可貌相|ren2 bu4 ke3 mao4 xiang4|Don\'t judge by appearance;患难见真情|huan4 nan4 jian4 zhen1 qing2|Hardship reveals true friends;说曹操，曹操到|shuo1 cao2 cao1, cao2 cao1 dao4|Speak of the devil;远亲不如近邻|yuan3 qin1 bu4 ru2 jin4 lin2|Close neighbor beats distant kin;家和万事兴|jia1 he2 wan4 shi4 xing1|Harmonious family prospers;民以食为天|min2 yi3 shi2 wei2 tian1|Food is heaven to the people;百闻不如一见|bai3 wen2 bu4 ru2 yi1 jian4|Seeing once beats hearing 100 times;车到山前必有路|che1 dao4 shan1 qian2 bi4 you3 lu4|A road will appear;船到桥头自然直|chuan2 dao4 qiao2 tou2 zi4 ran2 zhi2|It will work out naturally'
+      }
+    ];
+
+    /* ==========================================================
+       3. PINYIN & PHRASE PARSING UTILITIES
+       ========================================================== */
+    const TONE_MAP = {
+      a: ['ā', 'á', 'ǎ', 'à', 'a'],
+      e: ['ē', 'é', 'ě', 'è', 'e'],
+      i: ['ī', 'í', 'ǐ', 'ì', 'i'],
+      o: ['ō', 'ó', 'ǒ', 'ò', 'o'],
+      u: ['ū', 'ú', 'ǔ', 'ù', 'u'],
+      ü: ['ǖ', 'ǘ', 'ǚ', 'ǜ', 'ü']
+    };
+
+    function numToToneMark(syl) {
+      if (!syl) return '';
+      // Keep uppercase Latin tokens like CD, DVD, T as-is
+      if (/^[A-Z]+$/.test(syl)) return syl;
+      const cleaned = syl.toLowerCase().replace(/u:|v/g, 'ü');
+      const m = cleaned.match(/^([a-zü]+)([1-5])?$/);
+      if (!m) return syl;
+      const base = m[1];
+      const tone = m[2] ? parseInt(m[2], 10) : 5;
+      if (tone === 5) return base;
+
+      let idx = -1;
+      if (base.includes('a')) idx = base.indexOf('a');
+      else if (base.includes('e')) idx = base.indexOf('e');
+      else if (base.includes('ou')) idx = base.indexOf('o');
+      else {
+        for (let i = base.length - 1; i >= 0; i--) {
+          if ('aeiouü'.includes(base[i])) { idx = i; break; }
+        }
+      }
+      if (idx === -1) return base;
+      const vowel = base[idx];
+      const marked = TONE_MAP[vowel] ? TONE_MAP[vowel][tone - 1] : vowel;
+      return base.slice(0, idx) + marked + base.slice(idx + 1);
+    }
+
+    function normalizeSyllable(syl) {
+      return syl.toLowerCase().replace(/ü|u:/g, 'v').trim();
+    }
+
+    // Parse compact topic definitions into structured phrase objects
+    const TOPICS = RAW_TOPICS.map(topic => {
+      const phrases = topic.items.split(';').filter(Boolean).map(entry => {
+        const [simpRaw, pyRaw, meaning] = entry.split('|');
+        const simp = simpRaw.trim();
+        const trad = toTrad(simp);
+        // Extract pinyin tokens (strip punctuation)
+        const pyTokens = pyRaw.replace(/[,，。？?!！]/g, ' ').trim().split(/\s+/).filter(Boolean);
+
+        // Build display units aligning non-punctuation tokens with pinyin
+        const units = [];
+        let pyIdx = 0;
+        let i = 0;
+        while (i < simp.length) {
+          const chS = simp[i];
+          const chT = trad[i] || chS;
+
+          // Group consecutive ASCII letters (e.g. CD, DVD, T)
+          if (/[A-Za-z]/.test(chS)) {
+            let word = '';
+            while (i < simp.length && /[A-Za-z]/.test(simp[i])) {
+              word += simp[i];
+              i++;
+            }
+            const py = pyTokens[pyIdx++] || word;
+            units.push({ s: word, t: word, py, mark: numToToneMark(py), isPunct: false });
+            continue;
+          }
+
+          if (/[\s，,。？?!！]/.test(chS)) {
+            if (chS !== ' ') {
+              units.push({ s: chS, t: chT, py: '', mark: '', isPunct: true });
+            }
+            i++;
+            continue;
+          }
+
+          const py = pyTokens[pyIdx++] || '';
+          units.push({ s: chS, t: chT, py, mark: numToToneMark(py), isPunct: false });
+          i++;
+        }
+
+        return {
+          simp,
+          trad,
+          meaning: meaning ? meaning.trim() : '',
+          pyTokens,
+          units,
+          topicId: topic.id,
+          topicIcon: topic.icon,
+          topicTitleTrad: topic.titleTrad,
+          topicTitleSimp: topic.titleSimp
+        };
+      });
+
+      return { ...topic, phrases };
+    });
+
+    /* ==========================================================
+       4. APP STATE & PERSISTENCE
+       ========================================================== */
+    const STORAGE_KEY = 'putonghua_phrase_master_v3';
+
+    let state = {
+      script: 'trad',       // 'trad' | 'simp'
+      mode: 'pinyin',       // 'pinyin' | 'typing' | 'listening'
+      requireTones: true,
+      flashMode: false,
+      sfxEnabled: true,
+      selectedTopicIds: TOPICS.filter(t => t.daily).map(t => t.id),
+      mixCount: 10,
+      topicSearch: '',
+
+      // Active Round
+      isReviewRound: false,
+      queue: [],
+      currentIndex: 0,
+      score: 0,
+      streak: 0,
+      bestStreak: 0,
+      correctCount: 0,
+      hintStage: 0,
+      inReview: false,
+      hadMistakeOnCurrent: false,
+      missedInRound: [],
+      flashTimer: null
+    };
+
+    function isTrad() { return state.script === 'trad'; }
+
+    function loadSavedData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (d.script === 'trad' || d.script === 'simp') state.script = d.script;
+        if (['pinyin', 'typing', 'listening'].includes(d.mode)) state.mode = d.mode;
+        if (typeof d.requireTones === 'boolean') state.requireTones = d.requireTones;
+        if (typeof d.flashMode === 'boolean') state.flashMode = d.flashMode;
+        if (typeof d.sfxEnabled === 'boolean') state.sfxEnabled = d.sfxEnabled;
+        if ([10, 15, 20, 30].includes(d.mixCount)) state.mixCount = d.mixCount;
+        if (Array.isArray(d.selectedTopicIds)) {
+          const valid = new Set(TOPICS.map(t => t.id));
+          const filtered = d.selectedTopicIds.filter(id => valid.has(id));
+          if (filtered.length > 0) state.selectedTopicIds = filtered;
+        }
+      } catch (e) {
+        console.warn('Could not load saved state:', e);
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          script: state.script,
+          mode: state.mode,
+          requireTones: state.requireTones,
+          flashMode: state.flashMode,
+          sfxEnabled: state.sfxEnabled,
+          mixCount: state.mixCount,
+          selectedTopicIds: state.selectedTopicIds
+        }));
+      } catch (e) {
+        console.warn('Could not save state:', e);
+      }
+    }
+
+    /* ==========================================================
+       5. AUDIO (WEB AUDIO SFX + MANDARIN TTS)
+       ========================================================== */
+    let audioCtx = null;
+
+    function playSfx(type) {
+      if (!state.sfxEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+          osc.start(now);
+          osc.stop(now + 0.28);
+        } else if (type === 'wrong') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(240, now);
+          osc.frequency.setValueAtTime(185, now + 0.1);
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+          osc.start(now);
+          osc.stop(now + 0.26);
+        } else if (type === 'finish') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        }
+      } catch (e) {}
+    }
+
+    let mandarinVoice = null;
+    function loadVoices() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      mandarinVoice =
+        voices.find(v => /zh[-_]CN/i.test(v.lang) && /Tingting|Mei-Jia|Google|Microsoft|Xiaoxiao/i.test(v.name)) ||
+        voices.find(v => /zh[-_]CN/i.test(v.lang)) ||
+        voices.find(v => /zh[-_]TW/i.test(v.lang)) ||
+        voices.find(v => /^zh/i.test(v.lang)) || null;
+    }
+    if ('speechSynthesis' in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function speakText(text, rate = 1.0) {
+      if (!('speechSynthesis' in window)) {
+        showToast(isTrad() ? '此瀏覽器不支援語音朗讀' : '此浏览器不支持语音朗读');
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-CN';
+        utter.rate = rate;
+        if (mandarinVoice) utter.voice = mandarinVoice;
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+
+    function speakCurrent(rate = 1.0) {
+      const phrase = state.queue[state.currentIndex];
+      if (!phrase) return;
+      speakText(phrase.simp, rate);
+    }
+
+    /* ==========================================================
+       6. UI HELPERS & HOME SCREEN RENDERING
+       ========================================================== */
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('opacity-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.add('opacity-0'), 2000);
+    }
+
+    function showView(viewId) {
+      ['homeView', 'gameView', 'summaryView'].forEach(id => {
+        document.getElementById(id).classList.toggle('hidden', id !== viewId);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goHome() {
+      clearTimeout(state.flashTimer);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      showView('homeView');
+      renderMixPanel();
+    }
+
+    function applyScriptToDOM() {
+      const trad = isTrad();
+      document.querySelectorAll('[data-trad]').forEach(el => {
+        el.textContent = trad ? el.getAttribute('data-trad') : el.getAttribute('data-simp');
+      });
+      const btn = document.getElementById('scriptToggleBtn');
+      btn.innerHTML = trad
+        ? '繁 / <span class="text-slate-400 font-normal">简</span>'
+        : '<span class="text-slate-400 font-normal">繁</span> / 简';
+
+      const searchInput = document.getElementById('topicSearchInput');
+      if (searchInput) {
+        searchInput.placeholder = trad
+          ? '搜尋主題，如 數字、食物、香港地鐵、成語...'
+          : '搜索主题，如 数字、食物、香港地铁、成语...';
+      }
+    }
+
+    function toggleScript() {
+      state.script = isTrad() ? 'simp' : 'trad';
+      saveData();
+      applyScriptToDOM();
+      updateModeUI();
+      updateOptionToggles();
+      renderMixPanel();
+      refreshCurrentCardText();
+    }
+
+    function toggleSfx() {
+      state.sfxEnabled = !state.sfxEnabled;
+      document.getElementById('sfxToggleBtn').textContent = state.sfxEnabled ? '🔊' : '🔇';
+      saveData();
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      saveData();
+      updateModeUI();
+      updateOptionToggles();
+    }
+
+    function updateModeUI() {
+      const trad = isTrad();
+      ['pinyin', 'typing', 'listening'].forEach(m => {
+        const btn = document.getElementById(`modeBtn-${m}`);
+        if (!btn) return;
+        if (m === state.mode) {
+          btn.className = 'mode-btn flex flex-col items-center justify-center py-2.5 px-1.5 rounded-xl border-2 transition text-center bg-[#E05A47]/10 border-[#E05A47] text-[#C84735] shadow-sm';
+        } else {
+          btn.className = 'mode-btn flex flex-col items-center justify-center py-2.5 px-1.5 rounded-xl border-2 transition text-center bg-[#F8F7F4] border-transparent text-slate-600 hover:bg-[#EFECE6]';
+        }
+      });
+
+      const hint = document.getElementById('modeHintText');
+      if (state.mode === 'pinyin') {
+        hint.textContent = trad ? '看詞語打拼音' : '看词语打拼音';
+      } else if (state.mode === 'typing') {
+        hint.textContent = trad ? '用手機中文輸入法' : '用手机中文输入法';
+      } else {
+        hint.textContent = trad ? '聽語音答拼音或漢字' : '听语音答拼音或汉字';
+      }
+
+      document.getElementById('toneOptionRow').classList.toggle('hidden', state.mode === 'typing');
+      document.getElementById('flashOptionRow').classList.toggle('hidden', state.mode !== 'typing');
+    }
+
+    function toggleRequireTones() {
+      state.requireTones = !state.requireTones;
+      saveData();
+      updateOptionToggles();
+      updateInputPlaceholder();
+    }
+
+    function toggleFlashMode() {
+      state.flashMode = !state.flashMode;
+      saveData();
+      updateOptionToggles();
+    }
+
+    function updateOptionToggles() {
+      const trad = isTrad();
+      const homeTone = document.getElementById('homeToneToggle');
+      const inGameTone = document.getElementById('inGameToneToggle');
+      const homeFlash = document.getElementById('homeFlashToggle');
+
+      if (homeTone) {
+        homeTone.textContent = state.requireTones
+          ? (trad ? '開啟 (wo3)' : '开启 (wo3)')
+          : (trad ? '關閉 (wo)' : '关闭 (wo)');
+        homeTone.className = state.requireTones
+          ? 'px-3 py-1 rounded-full text-xs font-bold transition bg-[#2A8C82] text-white'
+          : 'px-3 py-1 rounded-full text-xs font-bold transition bg-slate-200 text-slate-600';
+      }
+
+      if (inGameTone) {
+        inGameTone.classList.toggle('hidden', state.mode === 'typing');
+        inGameTone.textContent = state.requireTones
+          ? (trad ? '需聲調 (wo3)' : '需声调 (wo3)')
+          : (trad ? '免聲調 (wo)' : '免声调 (wo)');
+        inGameTone.className = state.requireTones
+          ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition shrink-0 bg-[#2A8C82]/10 border-[#2A8C82]/30 text-[#2A8C82]'
+          : 'text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition shrink-0 bg-slate-100 border-slate-200 text-slate-500';
+      }
+
+      if (homeFlash) {
+        homeFlash.textContent = state.flashMode
+          ? (trad ? '開啟' : '开启')
+          : (trad ? '關閉' : '关闭');
+        homeFlash.className = state.flashMode
+          ? 'px-3 py-1 rounded-full text-xs font-bold transition bg-[#2A8C82] text-white'
+          : 'px-3 py-1 rounded-full text-xs font-bold transition bg-slate-200 text-slate-600';
+      }
+    }
+
+    /* ==========================================================
+       7. MIXED TOPICS PICKER LOGIC
+       ========================================================== */
+    function getSelectedUniquePool() {
+      const selected = new Set(state.selectedTopicIds);
+      const seen = new Set();
+      const pool = [];
+      TOPICS.forEach(t => {
+        if (!selected.has(t.id)) return;
+        t.phrases.forEach(p => {
+          if (seen.has(p.simp)) return;
+          seen.add(p.simp);
+          pool.push(p);
+        });
+      });
+      return pool;
+    }
+
+    function setTopicSearch(val) {
+      state.topicSearch = val.trim().toLowerCase();
+      renderMixPanel();
+    }
+
+    function toggleTopic(topicId) {
+      const idx = state.selectedTopicIds.indexOf(topicId);
+      if (idx >= 0) state.selectedTopicIds.splice(idx, 1);
+      else state.selectedTopicIds.push(topicId);
+      saveData();
+      renderMixPanel();
+    }
+
+    function selectMixPreset(preset) {
+      const trad = isTrad();
+      if (preset === 'all') {
+        state.selectedTopicIds = TOPICS.map(t => t.id);
+      } else if (preset === 'daily') {
+        state.selectedTopicIds = TOPICS.filter(t => t.daily).map(t => t.id);
+      } else if (preset === 'random5') {
+        state.selectedTopicIds = shuffleArray(TOPICS).slice(0, 5).map(t => t.id);
+        showToast(trad ? '🎲 已隨機抽選 5 個主題' : '🎲 已随机抽选 5 个主题');
+      } else if (preset === 'clear') {
+        state.selectedTopicIds = [];
+      }
+      saveData();
+      renderMixPanel();
+    }
+
+    function setMixCount(cnt) {
+      state.mixCount = cnt;
+      saveData();
+      renderMixPanel();
+    }
+
+    function renderMixPanel() {
+      const trad = isTrad();
+      const container = document.getElementById('mixChipsContainer');
+      const poolBadge = document.getElementById('mixPoolBadge');
+      const startBtn = document.getElementById('startMixBtn');
+      const startLabel = document.getElementById('startMixBtnLabel');
+
+      // Highlight round count buttons
+      document.querySelectorAll('.mix-cnt-btn').forEach(btn => {
+        const cnt = parseInt(btn.getAttribute('data-count'), 10);
+        btn.className = cnt === state.mixCount
+          ? 'mix-cnt-btn px-3 py-1 rounded-lg text-xs font-bold transition bg-white text-[#E05A47] shadow-sm'
+          : 'mix-cnt-btn px-3 py-1 rounded-lg text-xs font-bold transition text-slate-500 hover:text-slate-700';
+      });
+
+      const selectedSet = new Set(state.selectedTopicIds);
+      const q = state.topicSearch;
+      container.innerHTML = '';
+
+      const filteredTopics = TOPICS.filter(t => {
+        if (!q) return true;
+        return t.titleTrad.toLowerCase().includes(q) ||
+               t.titleSimp.toLowerCase().includes(q) ||
+               t.id.toLowerCase().includes(q);
+      });
+
+      if (filteredTopics.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-2">${trad ? '找不到符合的主題' : '找不到符合的主题'}</p>`;
+      } else {
+        filteredTopics.forEach(t => {
+          const active = selectedSet.has(t.id);
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.onclick = () => toggleTopic(t.id);
+          chip.className = active
+            ? 'px-2.5 py-1.5 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 border bg-[#E05A47]/10 border-[#E05A47]/45 text-[#C84735] zh-font'
+            : 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition active:scale-95 flex items-center gap-1 border bg-[#F8F7F4] border-[#E7E5E0] text-slate-500 zh-font';
+          chip.innerHTML = `
+            <span>${active ? '✓' : '+'}</span>
+            <span>${t.icon} ${trad ? t.titleTrad : t.titleSimp}</span>
+            <span class="text-[10px] opacity-65">(${t.phrases.length})</span>
+          `;
+          container.appendChild(chip);
+        });
+      }
+
+      const pool = getSelectedUniquePool();
+      const topicCount = state.selectedTopicIds.length;
+      poolBadge.textContent = trad ? `${pool.length} 詞可用` : `${pool.length} 词可用`;
+
+      const actualCount = Math.min(state.mixCount, pool.length);
+      if (topicCount === 0 || pool.length === 0) {
+        startBtn.disabled = true;
+        startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        startLabel.textContent = trad ? '請至少選擇 1 個主題' : '请至少选择 1 个主题';
+      } else {
+        startBtn.disabled = false;
+        startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        if (topicCount === 1) {
+          const single = TOPICS.find(t => t.id === state.selectedTopicIds[0]);
+          const tName = single ? (trad ? single.titleTrad : single.titleSimp) : '';
+          startLabel.textContent = trad
+            ? `開始練習「${tName}」（${actualCount} 題）`
+            : `开始练习「${tName}」（${actualCount} 题）`;
+        } else {
+          startLabel.textContent = trad
+            ? `開始綜合混練（${topicCount} 主題 · ${actualCount} 題）`
+            : `开始综合混练（${topicCount} 主题 · ${actualCount} 题）`;
+        }
+      }
+    }
+
+    /* ==========================================================
+       8. GAMEPLAY LIFECYCLE & REVIEW-FIRST SUBMISSION
+       ========================================================== */
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function resetRoundStats() {
+      state.currentIndex = 0;
+      state.score = 0;
+      state.streak = 0;
+      state.bestStreak = 0;
+      state.correctCount = 0;
+      state.missedInRound = [];
+    }
+
+    function startMixRound() {
+      const pool = getSelectedUniquePool();
+      if (pool.length === 0) {
+        showToast(isTrad() ? '請至少選擇 1 個主題' : '请至少选择 1 个主题');
+        return;
+      }
+      state.isReviewRound = false;
+      state.queue = shuffleArray(pool).slice(0, Math.min(state.mixCount, pool.length));
+      resetRoundStats();
+      showView('gameView');
+      loadQuestion();
+    }
+
+    function startMissedReview() {
+      if (state.missedInRound.length === 0) return;
+      state.isReviewRound = true;
+      state.queue = shuffleArray(state.missedInRound);
+      resetRoundStats();
+      showView('gameView');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearTimeout(state.flashTimer);
+      const phrase = state.queue[state.currentIndex];
+      if (!phrase) return;
+
+      const trad = isTrad();
+      state.hintStage = 0;
+      state.inReview = false;
+      state.hadMistakeOnCurrent = false;
+
+      // Header progress
+      const total = state.queue.length;
+      const cur = state.currentIndex + 1;
+      document.getElementById('gameHeaderTitle').textContent = state.isReviewRound
+        ? (trad ? '🔁 錯題複習' : '🔁 错题复习')
+        : (trad ? `🔀 綜合混練 (${state.selectedTopicIds.length} 主題)` : `🔀 综合混练 (${state.selectedTopicIds.length} 主题)`);
+      document.getElementById('gameStreakBadge').textContent = `🔥 ${state.streak}`;
+      document.getElementById('gameProgressText').textContent = `${cur} / ${total}`;
+      document.getElementById('gameProgressBar').style.width = `${Math.round((cur / total) * 100)}%`;
+
+      // Mode & Topic badges
+      const modeTag = document.getElementById('cardModeTag');
+      if (state.mode === 'pinyin') modeTag.textContent = trad ? '⌨️ 拼音輸入' : '⌨️ 拼音输入';
+      else if (state.mode === 'typing') modeTag.textContent = '✍️ 中文打字';
+      else modeTag.textContent = trad ? '🎧 聽寫挑戰' : '🎧 听写挑战';
+
+      document.getElementById('cardTopicTag').textContent = `${phrase.topicIcon} ${trad ? phrase.topicTitleTrad : phrase.topicTitleSimp}`;
+      updateOptionToggles();
+
+      // Phrase display & adaptive font sizing for longer idioms/proverbs
+      const text = trad ? phrase.trad : phrase.simp;
+      const charsEl = document.getElementById('phraseChars');
+      charsEl.textContent = text;
+      charsEl.classList.remove('flash-blur');
+
+      if (text.length >= 10) {
+        charsEl.className = 'text-xl sm:text-2xl font-bold tracking-wide text-slate-800 zh-font leading-snug break-words';
+      } else if (text.length >= 6) {
+        charsEl.className = 'text-2xl sm:text-3xl font-bold tracking-wide text-slate-800 zh-font leading-snug break-words';
+      } else {
+        charsEl.className = 'text-4xl sm:text-5xl font-bold tracking-wider text-slate-800 zh-font leading-snug break-words';
+      }
+
+      // Listening vs Visual prompt
+      const isListening = state.mode === 'listening';
+      document.getElementById('phraseDisplayWrap').classList.toggle('hidden', isListening);
+      document.getElementById('listeningPrompt').classList.toggle('hidden', !isListening);
+      document.getElementById('phraseMeaning').textContent = isListening ? '' : phrase.meaning;
+
+      // Flash memory blur in Chinese Typing mode
+      if (state.mode === 'typing' && state.flashMode) {
+        state.flashTimer = setTimeout(() => {
+          if (!state.inReview) charsEl.classList.add('flash-blur');
+        }, 2000);
+      }
+
+      // Reset card visual states
+      const card = document.getElementById('phraseCard');
+      card.classList.remove('border-emerald-400', 'border-rose-400', 'animate-shake');
+      card.classList.add('border-[#E7E5E0]');
+
+      document.getElementById('hintBox').classList.add('hidden');
+      document.getElementById('feedbackBanner').classList.add('hidden');
+      document.getElementById('answerBox').classList.add('hidden');
+      document.getElementById('hintBtn').classList.remove('hidden');
+      document.getElementById('revealBtn').classList.remove('hidden');
+      document.getElementById('retryBtn').classList.add('hidden');
+
+      const input = document.getElementById('answerInput');
+      input.value = '';
+      input.readOnly = false;
+      input.classList.remove('bg-slate-100', 'text-slate-500');
+      updateInputPlaceholder();
+      updateSubmitButtonUI();
+
+      // Auto-play audio in Listening mode
+      if (isListening) {
+        setTimeout(() => speakCurrent(1.0), 220);
+      }
+    }
+
+    function updateInputPlaceholder() {
+      const input = document.getElementById('answerInput');
+      const trad = isTrad();
+      if (state.mode === 'pinyin') {
+        input.placeholder = state.requireTones
+          ? (trad ? '輸入拼音加聲調，如 ni3 hao3' : '输入拼音加声调，如 ni3 hao3')
+          : (trad ? '輸入拼音（免聲調），如 ni hao' : '输入拼音（免声调），如 ni hao');
+      } else if (state.mode === 'typing') {
+        input.placeholder = trad ? '用中文輸入法打出詞語...' : '用中文输入法打出词语...';
+      } else {
+        input.placeholder = state.requireTones
+          ? (trad ? '輸入拼音 (ni3 hao3) 或漢字...' : '输入拼音 (ni3 hao3) 或汉字...')
+          : (trad ? '輸入拼音 (ni hao) 或漢字...' : '输入拼音 (ni hao) 或汉字...');
+      }
+    }
+
+    function updateSubmitButtonUI() {
+      const btn = document.getElementById('submitBtn');
+      const trad = isTrad();
+      if (state.inReview) {
+        const isLast = state.currentIndex >= state.queue.length - 1;
+        btn.textContent = isLast
+          ? (trad ? '查看成績 →' : '查看成绩 →')
+          : (trad ? '下一題 →' : '下一题 →');
+        btn.className = 'btn-jade text-white font-bold px-5 py-3 rounded-xl text-sm sm:text-base shrink-0 zh-font';
+      } else {
+        btn.textContent = trad ? '確認' : '确认';
+        btn.className = 'btn-primary text-white font-bold px-5 py-3 rounded-xl text-sm sm:text-base shrink-0 zh-font';
+      }
+    }
+
+    function refreshCurrentCardText() {
+      const phrase = state.queue[state.currentIndex];
+      if (!phrase) return;
+      const trad = isTrad();
+      document.getElementById('phraseChars').textContent = trad ? phrase.trad : phrase.simp;
+      document.getElementById('cardTopicTag').textContent = `${phrase.topicIcon} ${trad ? phrase.topicTitleTrad : phrase.topicTitleSimp}`;
+      if (!document.getElementById('answerBox').classList.contains('hidden')) {
+        renderAnswerBreakdown(phrase);
+      }
+      updateInputPlaceholder();
+      updateSubmitButtonUI();
+    }
+
+    /* ==========================================================
+       9. ANSWER MATCHING (PINYIN + TONE SANDHI + CHINESE)
+       ========================================================== */
+    function stripPunctAndSpaces(str) {
+      return str.replace(/[\s，,。？?!！、；;：:'"“”‘’\-]/g, '');
+    }
+
+    function checkChineseMatch(userInput, phrase) {
+      const u = stripPunctAndSpaces(userInput).toLowerCase();
+      if (!u) return false;
+      const s = stripPunctAndSpaces(phrase.simp).toLowerCase();
+      const t = stripPunctAndSpaces(phrase.trad).toLowerCase();
+      return u === s || u === t;
+    }
+
+    function buildPinyinRegex(phrase, requireTones) {
+      const nonPunctUnits = phrase.units.filter(u => !u.isPunct);
+      const parts = nonPunctUnits.map((u, idx) => {
+        const norm = normalizeSyllable(u.py);
+        // Handle uppercase English letters like CD, DVD, T
+        if (/^[a-z]+$/.test(norm) && /^[A-Z]+$/.test(u.s)) {
+          return norm;
+        }
+        const m = norm.match(/^([a-zv]+)([1-5])?$/);
+        if (!m) return norm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const base = m[1];
+        const tone = m[2] || '5';
+
+        if (!requireTones) {
+          return `${base}[1-5]?`;
+        }
+
+        // Tone sandhi tolerance for 一 (yi1/yi2/yi4) and 不 (bu4/bu2) in multi-char phrases
+        if (nonPunctUnits.length > 1) {
+          if (u.s === '一' && base === 'yi') return `yi[124]`;
+          if (u.s === '不' && base === 'bu') return `bu[24]`;
+        }
+        // Neutral tone: accept 5 or omitted digit
+        if (tone === '5') return `${base}5?`;
+        return `${base}${tone}`;
+      });
+      return new RegExp('^' + parts.join('') + '$', 'i');
+    }
+
+    function checkPinyinMatch(userInput, phrase, requireTones) {
+      const cleaned = stripPunctAndSpaces(userInput).toLowerCase().replace(/ü|u:/g, 'v');
+      if (!cleaned) return false;
+      const regex = buildPinyinRegex(phrase, requireTones);
+      return regex.test(cleaned);
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      // If already in review state, advance to next question
+      if (state.inReview) {
+        goNextQuestion();
+        return;
+      }
+
+      const input = document.getElementById('answerInput');
+      const val = input.value.trim();
+      if (!val) {
+        showToast(isTrad() ? '請先輸入答案' : '请先输入答案');
+        input.focus();
+        return;
+      }
+
+      const phrase = state.queue[state.currentIndex];
+      let isCorrect = false;
+
+      if (state.mode === 'pinyin') {
+        isCorrect = checkPinyinMatch(val, phrase, state.requireTones);
+      } else if (state.mode === 'typing') {
+        isCorrect = checkChineseMatch(val, phrase);
+      } else {
+        // Listening mode accepts either Pinyin or Chinese characters
+        isCorrect = checkChineseMatch(val, phrase) || checkPinyinMatch(val, phrase, state.requireTones);
+      }
+
+      enterReviewState(isCorrect, val, false);
+    }
+
+    function enterReviewState(isCorrect, userTyped, wasRevealed) {
+      clearTimeout(state.flashTimer);
+      state.inReview = true;
+
+      const phrase = state.queue[state.currentIndex];
+      const trad = isTrad();
+      const card = document.getElementById('phraseCard');
+      const banner = document.getElementById('feedbackBanner');
+      const input = document.getElementById('answerInput');
+
+      // Reveal hidden text (Listening or Flash Memory)
+      document.getElementById('phraseDisplayWrap').classList.remove('hidden');
+      document.getElementById('listeningPrompt').classList.add('hidden');
+      document.getElementById('phraseChars').classList.remove('flash-blur');
+      document.getElementById('phraseMeaning').textContent = phrase.meaning;
+
+      // Lock input during review so user can inspect the answer calmly
+      input.readOnly = true;
+      input.classList.add('bg-slate-100', 'text-slate-500');
+      input.blur();
+
+      // Always show full character-by-character Pinyin breakdown
+      renderAnswerBreakdown(phrase);
+
+      if (isCorrect) {
+        playSfx('correct');
+        if (!state.hadMistakeOnCurrent) {
+          state.correctCount++;
+          state.streak++;
+          if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+          const pts = state.hintStage === 0 ? 10 : (state.hintStage === 1 ? 7 : 5);
+          state.score += pts + Math.min(state.streak, 5);
+        }
+        document.getElementById('gameStreakBadge').textContent = `🔥 ${state.streak}`;
+        card.classList.remove('border-[#E7E5E0]', 'border-rose-400');
+        card.classList.add('border-emerald-400');
+
+        banner.className = 'rounded-xl px-3.5 py-2.5 text-sm font-bold text-center animate-pop bg-emerald-50 text-emerald-700 border border-emerald-200 zh-font';
+        banner.textContent = trad ? '✅ 答對了！核對下方讀音後按「下一題」' : '✅ 答对了！核对下方读音后按「下一题」';
+        document.getElementById('retryBtn').classList.add('hidden');
+      } else {
+        playSfx('wrong');
+        state.hadMistakeOnCurrent = true;
+        state.streak = 0;
+        document.getElementById('gameStreakBadge').textContent = `🔥 0`;
+        if (!state.missedInRound.some(p => p.simp === phrase.simp)) {
+          state.missedInRound.push(phrase);
+        }
+
+        card.classList.remove('border-[#E7E5E0]', 'border-emerald-400');
+        card.classList.add('border-rose-400', 'animate-shake');
+        setTimeout(() => card.classList.remove('animate-shake'), 350);
+
+        banner.className = 'rounded-xl px-3.5 py-2.5 text-sm font-bold text-center animate-pop bg-rose-50 text-rose-700 border border-rose-200 zh-font';
+        if (wasRevealed) {
+          banner.textContent = trad ? '👁️ 已顯示答案，聽一遍讀音再繼續吧！' : '👁️ 已显示答案，听一遍读音再继续吧！';
+        } else {
+          banner.textContent = trad
+            ? `❌ 你的輸入：「${userTyped}」— 請核對正確拼音`
+            : `❌ 你的输入：「${userTyped}」— 请核对正确拼音`;
+        }
+        document.getElementById('retryBtn').classList.remove('hidden');
+      }
+
+      document.getElementById('hintBtn').classList.add('hidden');
+      document.getElementById('revealBtn').classList.add('hidden');
+      updateSubmitButtonUI();
+    }
+
+    function retryCurrentQuestion() {
+      const input = document.getElementById('answerInput');
+      state.inReview = false;
+      input.readOnly = false;
+      input.value = '';
+      input.classList.remove('bg-slate-100', 'text-slate-500');
+      document.getElementById('feedbackBanner').classList.add('hidden');
+      document.getElementById('retryBtn').classList.add('hidden');
+      document.getElementById('phraseCard').classList.remove('border-rose-400');
+      document.getElementById('phraseCard').classList.add('border-[#E7E5E0]');
+      updateSubmitButtonUI();
+      input.focus();
+    }
+
+    function renderAnswerBreakdown(phrase) {
+      const trad = isTrad();
+      const box = document.getElementById('answerBox');
+      const pills = document.getElementById('answerPills');
+      const plain = document.getElementById('answerFullPlain');
+
+      plain.textContent = phrase.pyTokens.join(' ');
+      pills.innerHTML = '';
+
+      phrase.units.forEach(u => {
+        if (u.isPunct) {
+          const span = document.createElement('span');
+          span.className = 'text-lg font-bold text-slate-400 self-center';
+          span.textContent = trad ? u.t : u.s;
+          pills.appendChild(span);
+          return;
+        }
+        const pill = document.createElement('div');
+        pill.className = 'bg-white border border-[#E5E2DC] rounded-xl px-2.5 py-1.5 text-center min-w-[3.2rem] shadow-xs';
+        pill.innerHTML = `
+          <div class="text-xs font-bold text-[#2A8C82]">${u.mark}</div>
+          <div class="text-xl font-bold text-slate-800 zh-font leading-tight my-0.5">${trad ? u.t : u.s}</div>
+          <div class="text-[10px] font-mono text-slate-400">${u.py}</div>
+        `;
+        pills.appendChild(pill);
+      });
+
+      box.classList.remove('hidden');
+    }
+
+    function showHint() {
+      const phrase = state.queue[state.currentIndex];
+      if (!phrase || state.inReview) return;
+      state.hintStage++;
+
+      const box = document.getElementById('hintBox');
+      const content = document.getElementById('hintContent');
+      const nonPunct = phrase.units.filter(u => !u.isPunct);
+
+      if (state.hintStage === 1) {
+        // Stage 1: First syllable + remaining initials
+        const parts = nonPunct.map((u, idx) => {
+          if (idx === 0) return state.requireTones ? u.py : u.py.replace(/[1-5]/g, '');
+          return u.py[0] + '…';
+        });
+        content.textContent = parts.join(' ');
+      } else {
+        // Stage 2: Tone-marked pinyin without numbers (or full pinyin if typing mode)
+        content.textContent = nonPunct.map(u => u.mark).join(' ');
+      }
+      box.classList.remove('hidden');
+    }
+
+    function revealAnswer() {
+      if (state.inReview) return;
+      enterReviewState(false, '', true);
+      speakCurrent(1.0);
+    }
+
+    function goNextQuestion() {
+      if (state.currentIndex + 1 < state.queue.length) {
+        state.currentIndex++;
+        loadQuestion();
+      } else {
+        showSummary();
+      }
+    }
+
+    /* ==========================================================
+       10. ROUND SUMMARY
+       ========================================================== */
+    function showSummary() {
+      playSfx('finish');
+      const trad = isTrad();
+      const total = state.queue.length;
+      const accuracy = total > 0 ? Math.round((state.correctCount / total) * 100) : 0;
+      const stars = accuracy >= 90 ? '⭐⭐⭐' : accuracy >= 70 ? '⭐⭐' : '⭐';
+
+      document.getElementById('summaryStars').textContent = stars;
+      document.getElementById('summaryTitle').textContent = accuracy >= 90
+        ? (trad ? '太棒了！表現出色！' : '太棒了！表现出色！')
+        : accuracy >= 70
+          ? (trad ? '做得好！繼續保持！' : '做得好！继续保持！')
+          : (trad ? '練習完成！多聽多打更熟練！' : '练习完成！多听多打更熟练！');
+
+      document.getElementById('summarySubtitle').textContent = state.isReviewRound
+        ? (trad ? '錯題複習完成' : '错题复习完成')
+        : (trad ? `🔀 綜合混練 · ${state.selectedTopicIds.length} 個主題 · ${total} 題` : `🔀 综合混练 · ${state.selectedTopicIds.length} 个主题 · ${total} 题`);
+
+      document.getElementById('sumAccuracy').textContent = `${accuracy}%`;
+      document.getElementById('sumScore').textContent = state.score;
+      document.getElementById('sumStreak').textContent = state.bestStreak;
+
+      const missedSection = document.getElementById('missedSection');
+      const missedList = document.getElementById('missedList');
+      const reviewBtn = document.getElementById('reviewMissedBtn');
+
+      if (state.missedInRound.length > 0) {
+        missedSection.classList.remove('hidden');
+        reviewBtn.classList.remove('hidden');
+        reviewBtn.textContent = trad
+          ? `🔁 複習這 ${state.missedInRound.length} 個錯題`
+          : `🔁 复习这 ${state.missedInRound.length} 个错题`;
+        document.getElementById('missedCountBadge').textContent = `${state.missedInRound.length} ${trad ? '題' : '题'}`;
+
+        missedList.innerHTML = '';
+        state.missedInRound.forEach(p => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between gap-2 bg-[#F8F7F4] rounded-xl px-3 py-2';
+          row.innerHTML = `
+            <div class="min-w-0">
+              <div class="font-bold text-sm text-slate-800 zh-font">
+                ${trad ? p.trad : p.simp}
+                <span class="text-xs font-semibold text-[#2A8C82] ml-1">${p.units.filter(u => !u.isPunct).map(u => u.mark).join(' ')}</span>
+              </div>
+              <div class="text-[11px] text-slate-500 truncate">${p.pyTokens.join(' ')} · ${p.meaning}</div>
+            </div>
+            <button type="button" onclick="speakText('${p.simp.replace(/'/g, "\\'")}', 0.85)"
+              class="w-8 h-8 rounded-lg bg-white border border-[#E5E2DC] flex items-center justify-center shrink-0 active:scale-95">
+              🔊
+            </button>
+          `;
+          missedList.appendChild(row);
+        });
+      } else {
+        missedSection.classList.add('hidden');
+        reviewBtn.classList.add('hidden');
+      }
+
+      showView('summaryView');
+    }
+
+    /* ==========================================================
+       11. INITIALIZE APP
+       ========================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedData();
+      document.getElementById('sfxToggleBtn').textContent = state.sfxEnabled ? '🔊' : '🔇';
+      applyScriptToDOM();
+      updateModeUI();
+      updateOptionToggles();
+      renderMixPanel();
+    });
+  </script>
+</body>
+</html>
