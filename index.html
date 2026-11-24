@@ -1000,6 +1000,7 @@
       bestStreak: 0,
       correctCount: 0,
       hintStage: 0,
+      wrongAttempts: 0,
       inReview: false,
       hadMistakeOnCurrent: false,
       missedInRound: [],
@@ -1441,6 +1442,7 @@
 
       const trad = isTrad();
       state.hintStage = 0;
+      state.wrongAttempts = 0;
       state.inReview = false;
       state.hadMistakeOnCurrent = false;
 
@@ -1638,7 +1640,40 @@
         isCorrect = checkChineseMatch(val, phrase) || checkPinyinMatch(val, phrase, state.requireTones);
       }
 
-      enterReviewState(isCorrect, val, false);
+      if (isCorrect) {
+        enterReviewState(true, val, false);
+      } else {
+        handleWrongAttempt(val);
+      }
+    }
+
+    function handleWrongAttempt(userTyped) {
+      const phrase = state.queue[state.currentIndex];
+      const trad = isTrad();
+      const card = document.getElementById('phraseCard');
+      const banner = document.getElementById('feedbackBanner');
+      const input = document.getElementById('answerInput');
+
+      state.wrongAttempts++;
+      state.hadMistakeOnCurrent = true;
+      state.streak = 0;
+      document.getElementById('gameStreakBadge').textContent = '🔥 0';
+
+      if (!state.missedInRound.some(p => p.simp === phrase.simp)) {
+        state.missedInRound.push(phrase);
+      }
+
+      playSfx('wrong');
+      card.classList.remove('border-[#E7E5E0]', 'border-emerald-400');
+      card.classList.add('border-rose-400', 'animate-shake');
+      setTimeout(() => card.classList.remove('animate-shake'), 350);
+
+      banner.className = 'rounded-xl px-3.5 py-2.5 text-sm font-bold text-center animate-pop bg-rose-50 text-rose-700 border border-rose-200 zh-font';
+      banner.textContent = trad
+        ? `❌ 還差一點，再試一次！（已試 ${state.wrongAttempts} 次，需要時可按「提示」或「看答案」）`
+        : `❌ 还差一点，再试一次！（已试 ${state.wrongAttempts} 次，需要时可按「提示」或「看答案」）`;
+
+      input.focus();
     }
 
     function enterReviewState(isCorrect, userTyped, wasRevealed) {
@@ -1762,6 +1797,8 @@
       const box = document.getElementById('hintBox');
       const content = document.getElementById('hintContent');
       const nonPunct = phrase.units.filter(u => !u.isPunct);
+      const hasV = nonPunct.some(u => normalizeSyllable(u.py).includes('v'));
+      const vNote = hasV ? '  (ü → v)' : '';
 
       if (state.hintStage === 1) {
         // Stage 1: First syllable + remaining initials
@@ -1769,10 +1806,10 @@
           if (idx === 0) return state.requireTones ? u.py : u.py.replace(/[1-5]/g, '');
           return u.py[0] + '…';
         });
-        content.textContent = parts.join(' ');
+        content.textContent = parts.join(' ') + vNote;
       } else {
         // Stage 2: Tone-marked pinyin without numbers (or full pinyin if typing mode)
-        content.textContent = nonPunct.map(u => u.mark).join(' ');
+        content.textContent = nonPunct.map(u => u.mark).join(' ') + vNote;
       }
       box.classList.remove('hidden');
     }
