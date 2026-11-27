@@ -329,12 +329,15 @@
 
         <!-- Hint Box -->
         <div id="hintBox" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2.5 text-center animate-pop">
-          <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider mr-1.5" data-trad="提示" data-simp="提示">提示</span>
+          <span id="hintLabel" class="text-[11px] font-bold text-amber-700 uppercase tracking-wider mr-1.5">提示</span>
           <span id="hintContent" class="text-sm font-bold text-amber-900 font-mono"></span>
         </div>
 
         <!-- Feedback Banner (Shown in Review State) -->
         <div id="feedbackBanner" class="hidden rounded-xl px-3.5 py-2.5 text-sm font-bold text-center animate-pop"></div>
+
+        <!-- Pinyin Part-by-Part Diagnostic (聲母 / 韻母 / 聲調) -->
+        <div id="pinyinDiffBox" class="hidden bg-[#F8F7F4] border border-rose-200 rounded-2xl p-3 space-y-2 animate-pop"></div>
 
         <!-- Answer Breakdown Box (Shown on Show Answer or After Submit) -->
         <div id="answerBox" class="hidden bg-[#F8F7F4] border border-[#E7E5E0] rounded-2xl p-3 space-y-2 animate-pop">
@@ -1499,6 +1502,7 @@
 
       document.getElementById('hintBox').classList.add('hidden');
       document.getElementById('feedbackBanner').classList.add('hidden');
+      document.getElementById('pinyinDiffBox').classList.add('hidden');
       document.getElementById('answerBox').classList.add('hidden');
       document.getElementById('hintBtn').classList.remove('hidden');
       document.getElementById('revealBtn').classList.remove('hidden');
@@ -1673,12 +1677,215 @@
         ? `❌ 還差一點，再試一次！（已試 ${state.wrongAttempts} 次，需要時可按「提示」或「看答案」）`
         : `❌ 还差一点，再试一次！（已试 ${state.wrongAttempts} 次，需要时可按「提示」或「看答案」）`;
 
+      // Highlight which 聲母 / 韻母 / 聲調 is right or wrong for Pinyin input
+      const isPinyinAttempt = state.mode === 'pinyin' ||
+        (state.mode === 'listening' && /[a-zA-ZüÜ]/.test(userTyped));
+      if (isPinyinAttempt) {
+        renderPinyinDiff(userTyped, phrase);
+      } else {
+        document.getElementById('pinyinDiffBox').classList.add('hidden');
+      }
+
       input.focus();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function splitUserSyllable(tok) {
+      const norm = normalizeSyllable(tok);
+      const m = norm.match(/^([a-zv]*)([1-5])?$/);
+      if (!m) {
+        return { initial: '', final: norm, tone: '' };
+      }
+      const base = m[1] || '';
+      const tone = m[2] || '';
+      const initMatch = base.match(/^(zh|ch|sh|[bpmfdtnlgkhjqxrzcsyw])(.*)$/);
+      if (initMatch) {
+        return { initial: initMatch[1], final: initMatch[2], tone };
+      }
+      return { initial: '', final: base, tone };
+    }
+
+    function parseUserPinyinTokens(rawInput, expectedCount) {
+      const cleaned = rawInput
+        .toLowerCase()
+        .replace(/ü|u:/g, 'v')
+        .replace(/[，,。？?!！、；;：:'"“”‘’\-]/g, ' ')
+        .trim();
+      if (!cleaned) return [];
+
+      // Split by whitespace first, then split stuck syllables at tone numbers (e.g. "shu4xue2")
+      let tokens = [];
+      cleaned.split(/\s+/).forEach(chunk => {
+        const digitSplit = chunk.match(/[a-zv]+[1-5]?|[1-5]/g);
+        if (digitSplit) tokens.push(...digitSplit);
+        else if (chunk) tokens.push(chunk);
+      });
+
+      // If user omitted spaces and tone numbers (e.g. "nihao"), greedily segment into syllables
+      if (tokens.length < expectedCount) {
+        const sylRegex = /(?:zh|ch|sh|[bpmfdtnlgkhjqxrzcsyw])?(?:iang|iong|uang|ueng|ang|eng|ing|ong|iao|ian|uai|uan|van|ia|ie|iu|in|ua|uo|ui|un|ue|ve|vn|ai|ei|ao|ou|an|en|er|[aeiouv])[1-5]?/g;
+        const expanded = [];
+        tokens.forEach(tok => {
+          if (/[1-5]$/.test(tok)) {
+            expanded.push(tok);
+            return;
+          }
+          const matches = tok.match(sylRegex);
+          if (matches && matches.join('') === tok && matches.length > 1) {
+            expanded.push(...matches);
+          } else {
+            expanded.push(tok);
+          }
+        });
+        tokens = expanded;
+      }
+
+      return tokens;
+    }
+
+    function getAcceptedTones(unit, totalUnits) {
+      const norm = normalizeSyllable(unit.py);
+      const m = norm.match(/^([a-zv]+)([1-5])?$/);
+      const base = m ? m[1] : '';
+      const tone = m && m[2] ? m[2] : '5';
+
+      if (totalUnits > 1) {
+        if (unit.s === '一' && base === 'yi') return ['1', '2', '4'];
+        if (unit.s === '不' && base === 'bu') return ['2', '4'];
+      }
+      if (tone === '5') return ['5', ''];
+      return [tone];
+    }
+
+    function renderPinyinDiff(userTyped, phrase) {
+      const box = document.getElementById('pinyinDiffBox');
+      const trad = isTrad();
+      const targets = phrase.units.filter(u => !u.isPunct);
+      const userTokens = parseUserPinyinTokens(userTyped, targets.length);
+      const maxLen = Math.max(targets.length, userTokens.length);
+
+      const okSpan = text => `<span class="text-emerald-600">${escapeHtml(text)}</span>`;
+      const badSpan = text => `<span class="text-rose-600 underline decoration-rose-400 decoration-2 underline-offset-2">${escapeHtml(text)}</span>`;
+      const badge = (label, isOk) => isOk
+        ? `<span class="px-1 py-0.5 rounded bg-emerald-50 text-emerald-700">${label}✓</span>`
+        : `<span class="px-1 py-0.5 rounded bg-rose-50 text-rose-600">${label}✗</span>`;
+
+      let pillsHtml = '';
+
+      for (let i = 0; i < maxLen; i++) {
+        const target = targets[i];
+        const uTok = userTokens[i];
+
+        // Extra token typed beyond phrase length
+        if (!target && uTok) {
+          pillsHtml += `
+            <div class="bg-rose-50 border border-rose-300 rounded-xl px-2.5 py-1.5 text-center min-w-[3.2rem]">
+              <div class="font-mono text-base font-bold text-rose-600 line-through">${escapeHtml(uTok)}</div>
+              <div class="text-[10px] font-bold text-rose-500 mt-0.5 zh-font">${trad ? '多餘' : '多余'}</div>
+            </div>
+          `;
+          continue;
+        }
+
+        // Missing syllable
+        if (target && !uTok) {
+          pillsHtml += `
+            <div class="bg-white border border-dashed border-rose-300 rounded-xl px-2.5 py-1.5 text-center min-w-[3.2rem]">
+              <div class="font-mono text-base font-bold text-rose-400">___</div>
+              <div class="text-[10px] font-bold text-rose-500 mt-0.5 zh-font">${trad ? '漏打' : '漏打'}</div>
+            </div>
+          `;
+          continue;
+        }
+
+        // Handle uppercase English letters (e.g. CD, DVD, T)
+        if (/^[A-Z]+$/.test(target.s)) {
+          const match = uTok.toLowerCase() === target.s.toLowerCase();
+          pillsHtml += `
+            <div class="bg-white border ${match ? 'border-emerald-300' : 'border-rose-300'} rounded-xl px-2.5 py-1.5 text-center min-w-[3.2rem]">
+              <div class="font-mono text-base font-bold">${match ? okSpan(uTok) : badSpan(uTok)}</div>
+              <div class="text-[10px] font-bold mt-0.5">${badge(trad ? '字母' : '字母', match)}</div>
+            </div>
+          `;
+          continue;
+        }
+
+        const tParts = splitPinyinSyllable(target.py);
+        const uParts = splitUserSyllable(uTok);
+        const acceptedTones = getAcceptedTones(target, targets.length);
+
+        const initOk = uParts.initial === tParts.initial;
+        const finalOk = uParts.final === tParts.final;
+        const toneOk = !state.requireTones || acceptedTones.includes(uParts.tone);
+        const allOk = initOk && finalOk && toneOk;
+
+        // Build color-coded typed text (never reveals the answer)
+        let typedHtml = '';
+        if (uParts.initial) {
+          typedHtml += initOk ? okSpan(uParts.initial) : badSpan(uParts.initial);
+        } else if (!initOk) {
+          typedHtml += `<span class="text-rose-400 text-xs align-baseline">_</span>`;
+        }
+
+        if (uParts.final) {
+          typedHtml += finalOk ? okSpan(uParts.final) : badSpan(uParts.final);
+        } else if (!finalOk) {
+          typedHtml += `<span class="text-rose-400 text-xs align-baseline">_</span>`;
+        }
+
+        if (uParts.tone) {
+          typedHtml += toneOk ? okSpan(uParts.tone) : badSpan(uParts.tone);
+        } else if (!toneOk) {
+          typedHtml += `<span class="text-rose-500 text-xs font-extrabold">?</span>`;
+        }
+
+        // Micro-status badges for 聲母 / 韻母 / 聲調
+        const tags = [];
+        if (tParts.initial || uParts.initial) {
+          tags.push(badge(trad ? '聲' : '声', initOk));
+        }
+        tags.push(badge(trad ? '韻' : '韵', finalOk));
+        if (state.requireTones) {
+          tags.push(badge(trad ? '調' : '调', toneOk));
+        }
+
+        pillsHtml += `
+          <div class="bg-white border ${allOk ? 'border-emerald-300' : 'border-rose-300'} rounded-xl px-2.5 py-1.5 text-center min-w-[3.4rem] shadow-xs">
+            <div class="font-mono text-base font-extrabold tracking-wide leading-tight">${typedHtml}</div>
+            <div class="flex items-center justify-center gap-0.5 text-[10px] font-bold mt-1 zh-font">
+              ${tags.join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      const legendText = trad
+        ? '拼寫檢查（綠＝正確 · 紅＝有誤）'
+        : '拼写检查（绿＝正确 · 红＝有误）';
+
+      box.innerHTML = `
+        <div class="flex items-center justify-between text-[11px] font-bold text-slate-500 zh-font">
+          <span>${legendText}</span>
+          <span class="text-slate-400">${trad ? '聲母 · 韻母 · 聲調' : '声母 · 韵母 · 声调'}</span>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-1.5">
+          ${pillsHtml}
+        </div>
+      `;
+      box.classList.remove('hidden');
     }
 
     function enterReviewState(isCorrect, userTyped, wasRevealed) {
       clearTimeout(state.flashTimer);
       state.inReview = true;
+      document.getElementById('pinyinDiffBox').classList.add('hidden');
 
       const phrase = state.queue[state.currentIndex];
       const trad = isTrad();
@@ -1752,6 +1959,7 @@
       input.value = '';
       input.classList.remove('bg-slate-100', 'text-slate-500');
       document.getElementById('feedbackBanner').classList.add('hidden');
+      document.getElementById('pinyinDiffBox').classList.add('hidden');
       document.getElementById('retryBtn').classList.add('hidden');
       document.getElementById('phraseCard').classList.remove('border-rose-400');
       document.getElementById('phraseCard').classList.add('border-[#E7E5E0]');
@@ -1789,28 +1997,95 @@
       box.classList.remove('hidden');
     }
 
+    /**
+     * Split a Pinyin syllable into { initial (聲母), final (韻母), tone (聲調) }.
+     */
+    function splitPinyinSyllable(py) {
+      if (/^[A-Z]+$/.test(py)) {
+        return { initial: '', final: py, tone: '' };
+      }
+      const norm = normalizeSyllable(py);
+      const m = norm.match(/^([a-zv]+)([1-5])?$/);
+      if (!m) {
+        return { initial: '', final: norm, tone: '' };
+      }
+      const base = m[1];
+      const tone = m[2] || '';
+      const initMatch = base.match(/^(zh|ch|sh|[bpmfdtnlgkhjqxrzcsyw])(.+)$/);
+      if (initMatch) {
+        return { initial: initMatch[1], final: initMatch[2], tone };
+      }
+      // Zero-initial syllable (零聲母), e.g. ai4, an1, er2
+      return { initial: '', final: base, tone };
+    }
+
+    /**
+     * Build progressive word-by-word hint steps: 聲母 > 韻母 > 聲調.
+     */
+    function buildHintSteps(phrase) {
+      const nonPunct = phrase.units.filter(u => !u.isPunct);
+      const includeTone = state.requireTones || state.mode === 'typing';
+      const steps = [];
+      const completed = [];
+
+      nonPunct.forEach((u, idx) => {
+        const isLastWord = idx === nonPunct.length - 1;
+        const { initial, final, tone } = splitPinyinSyllable(u.py);
+        const prefix = completed.length > 0 ? completed.join(' ') + ' ' : '';
+        const withFinal = initial + final;
+        const hasToneStep = includeTone && Boolean(tone);
+        const fullWord = hasToneStep ? (withFinal + tone) : withFinal;
+
+        // Step 1: 聲母 (Initial)
+        if (initial) {
+          steps.push({
+            text: `${prefix}${initial}...`,
+            labelTrad: '提示 · 聲母',
+            labelSimp: '提示 · 声母'
+          });
+        }
+
+        // Step 2: 韻母 (Final)
+        steps.push({
+          text: hasToneStep
+            ? `${prefix}${withFinal}...`
+            : (isLastWord ? `${prefix}${withFinal}` : `${prefix}${withFinal} ...`),
+          labelTrad: '提示 · 韻母',
+          labelSimp: '提示 · 韵母'
+        });
+
+        // Step 3: 聲調 (Tone)
+        if (hasToneStep) {
+          steps.push({
+            text: isLastWord ? `${prefix}${fullWord}` : `${prefix}${fullWord} ...`,
+            labelTrad: '提示 · 聲調',
+            labelSimp: '提示 · 声调'
+          });
+        }
+
+        completed.push(fullWord);
+      });
+
+      return steps;
+    }
+
     function showHint() {
       const phrase = state.queue[state.currentIndex];
       if (!phrase || state.inReview) return;
-      state.hintStage++;
+
+      const steps = buildHintSteps(phrase);
+      if (steps.length === 0) return;
+
+      state.hintStage = Math.min(state.hintStage + 1, steps.length);
+      const currentStep = steps[state.hintStage - 1];
 
       const box = document.getElementById('hintBox');
+      const label = document.getElementById('hintLabel');
       const content = document.getElementById('hintContent');
-      const nonPunct = phrase.units.filter(u => !u.isPunct);
-      const hasV = nonPunct.some(u => normalizeSyllable(u.py).includes('v'));
-      const vNote = hasV ? '  (ü → v)' : '';
+      const vNote = currentStep.text.includes('v') ? '  (ü → v)' : '';
 
-      if (state.hintStage === 1) {
-        // Stage 1: First syllable + remaining initials
-        const parts = nonPunct.map((u, idx) => {
-          if (idx === 0) return state.requireTones ? u.py : u.py.replace(/[1-5]/g, '');
-          return u.py[0] + '…';
-        });
-        content.textContent = parts.join(' ') + vNote;
-      } else {
-        // Stage 2: Tone-marked pinyin without numbers (or full pinyin if typing mode)
-        content.textContent = nonPunct.map(u => u.mark).join(' ') + vNote;
-      }
+      label.textContent = isTrad() ? currentStep.labelTrad : currentStep.labelSimp;
+      content.textContent = currentStep.text + vNote;
       box.classList.remove('hidden');
     }
 
